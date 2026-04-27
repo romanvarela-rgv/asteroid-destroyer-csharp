@@ -132,6 +132,15 @@ namespace EngineGDI
             Draw(path, transform.Position.X, transform.Position.Y, transform.Scale.X, transform.Scale.Y, transform.Angle, transform.Origin.X, transform.Origin.Y);
         }
 
+        public static float GetTextWidth(string text, int fontSize)
+        {
+            using (Font font = new Font("Arial", fontSize))
+            using (Graphics g = window.CreateGraphics())
+            {
+                return g.MeasureString(text, font).Width;
+            }
+        }
+
         public static void DrawText(string text, float x, float y, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f)
         {
             drawQueue.Add(new DrawCommand

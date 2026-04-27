@@ -8,12 +8,17 @@ namespace EngineGDI
     public class Menu
     {
         private List<Text> menuItems = new List<Text>();
+        private List<float> itemWidths = new List<float>();
         private int selectedIndex;
         private Transform transform;
         private Color normalColor = Color.White;
         private Color selectedColor = Color.Cyan;
         private int fontSize;
         private float spacing;
+
+        // Variables para la animación del selector
+        private Vector2f selectorPos;
+        private float selectorWidth;
 
         public event Action<int> OnOptionSelected;
 
@@ -23,7 +28,7 @@ namespace EngineGDI
             set 
             { 
                 transform = value; 
-                UpdateItemsPositions(); // Reposicionar si el transform del menú cambia
+                UpdateItemsPositions();
             } 
         }
 
@@ -38,28 +43,35 @@ namespace EngineGDI
             {
                 Text item = new Text(opt, 0, 0, fontSize);
                 
-                // Al ser Transform un struct, hay que copiarlo, modificarlo y volverlo a asignar
                 Transform t = item.Transform;
                 t.Origin = new Vector2f(0.5f, 0.5f);
                 item.Transform = t;
 
                 menuItems.Add(item);
+                itemWidths.Add(Engine.GetTextWidth(opt, fontSize));
             }
+
             UpdateItemsPositions();
+
+            // Inicializar posición del selector
+            if (menuItems.Count > 0)
+            {
+                selectorPos = menuItems[0].Transform.Position;
+                selectorWidth = itemWidths[0];
+            }
         }
 
         private void UpdateItemsPositions()
         {
             for (int i = 0; i < menuItems.Count; i++)
             {
-                // Usamos transform y vec2d para calcular la posición de cada texto
                 Transform itemTransform = menuItems[i].Transform;
                 itemTransform.Position = transform.Position + new Vector2f(0, i * spacing);
                 menuItems[i].Transform = itemTransform;
             }
         }
 
-        public void Update()
+        public void Update(float deltaTime)
         {
             if (Engine.OnKeyDown(Keys.Up) || Engine.OnKeyDown(Keys.W))
             {
@@ -75,21 +87,37 @@ namespace EngineGDI
             {
                 OnOptionSelected?.Invoke(selectedIndex);
             }
+
+            // Animación suave del selector usando Lerp
+            if (menuItems.Count > 0)
+            {
+                Vector2f targetPos = menuItems[selectedIndex].Transform.Position;
+                float targetWidth = itemWidths[selectedIndex] + 20; // Un poco más ancho que el texto
+
+                float speed = 15f; // Ajusta la velocidad de la animación
+                selectorPos = Vector2f.Lerp(selectorPos, targetPos, deltaTime * speed);
+                selectorWidth = Vector2f.Lerp(selectorWidth, targetWidth, deltaTime * speed);
+            }
         }
 
         public void Draw()
         {
+            // Dibujar el selector animado
+            Engine.DrawRectangle(
+                selectorPos.X, 
+                selectorPos.Y, 
+                selectorWidth, 
+                fontSize + 10, 
+                Color.FromArgb(80, selectedColor), 
+                true, 
+                0.5f, 0.5f
+            );
+
             for (int i = 0; i < menuItems.Count; i++)
             {
                 bool isSelected = (i == selectedIndex);
                 menuItems[i].Color = isSelected ? selectedColor : normalColor;
                 
-                if (isSelected)
-                {
-                    // Dibujar el recuadro de fondo centrado usando el transform del texto
-                    Engine.DrawRectangle(menuItems[i].Transform, 250, fontSize + 10, Color.FromArgb(50, selectedColor), true);
-                }
-
                 // Dibujamos usando la clase Texto
                 menuItems[i].Draw();
             }

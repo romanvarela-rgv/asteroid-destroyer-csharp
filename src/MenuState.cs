@@ -28,7 +28,7 @@ namespace EngineGDI
 
         public void Update(float deltaTime)
         {
-            mainMenu.Update();
+            mainMenu.Update(deltaTime);
         }
 
         public void Draw()
