@@ -43,7 +43,7 @@ namespace EngineGDI
 
             foreach (var opt in options)
             {
-                Text item = new Text(opt, 0, 0);
+                Text item = new Text(opt, new Vector2f(0, 0));
                 item.SetFont(fontPath, fontSize);
                                 
                 Transform t = item.Transform;

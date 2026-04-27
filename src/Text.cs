@@ -17,10 +17,10 @@ namespace EngineGDI
         public int FontSize { get => fontSize; set => fontSize = value; }
         public string FontPath { get => fontPath; set => fontPath = value; }
 
-        public Text(string content, float x, float y, int fontSize = 24, string fontPath = null)
+        public Text(string content, Vector2f position, int fontSize = 24, string fontPath = null)
         {
             this.content = content;
-            this.transform = new Transform(x, y);
+            this.transform = new Transform(position);
             this.color = Color.White;
             this.fontSize = fontSize;
             this.fontPath = fontPath;
@@ -34,16 +34,8 @@ namespace EngineGDI
 
         public void Draw()
         {
-            Engine.DrawText(
-                content, 
-                transform.Position.X, 
-                transform.Position.Y, 
-                color, 
-                fontSize, 
-                transform.Origin.X, 
-                transform.Origin.Y,
-                fontPath
-            );
+            // Usamos la nueva sobrecarga de Engine que acepta Transform
+            Engine.DrawText(content, transform, color, fontSize, fontPath);
         }
     }
 }

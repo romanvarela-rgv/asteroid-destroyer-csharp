@@ -4,68 +4,36 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
-
 
 namespace EngineGDI
 {
     public static class Engine
     {
-        [DllImport("winmm.dll")]
-        private static extern long mciSendString(string strCommand, StringBuilder strReturn, int iReturnLength, IntPtr hwndCallback);
-
-        private enum CommandType { Texture, Text, Rectangle }
-        private class DrawCommand
-        {
-            public CommandType Type;
-            public string TexturePath;
-            public float X, Y, ScaleX, ScaleY;
-            public float Angle, OffsetX, OffsetY;
-            public string Text;
-            public string FontPath;
-            public Color Color;
-            public int FontSize;
-            public float Width, Height;
-            public bool Fill;
-        }
+        private static Form1 window;
+        private static List<DrawCommand> drawQueue = new List<DrawCommand>();
         private static Dictionary<string, Image> textures = new Dictionary<string, Image>();
         private static Dictionary<string, PrivateFontCollection> fontCollections = new Dictionary<string, PrivateFontCollection>();
         private static Dictionary<string, FontFamily> fontFamilies = new Dictionary<string, FontFamily>();
-        private static List<DrawCommand> drawQueue = new List<DrawCommand>();
-        private static GameForm window;
-        public static bool IsWindowOpen { get; private set; } = false;
-        public static Form Window => window;
-
-        private static HashSet<Keys> pressedKeys = new HashSet<Keys>();
-        private static HashSet<Keys> handledKeys = new HashSet<Keys>();
-        private static HashSet<Keys> releasedKeys = new HashSet<Keys>();
-        private static HashSet<Keys> handledReleasedKeys = new HashSet<Keys>();
+        
+        private static List<Keys> pressedKeys = new List<Keys>();
+        private static List<Keys> handledKeys = new List<Keys>();
+        private static List<Keys> releasedKeys = new List<Keys>();
+        private static List<Keys> handledReleasedKeys = new List<Keys>();
 
         private static List<string> debugMessages = new List<string>();
-        private static Font debugFont = new Font("Consolas", 10);
-        private static Brush debugBrush = Brushes.White;
+        private static Font debugFont = new Font("Arial", 10);
+        private static Brush debugBrush = Brushes.Lime;
 
-        private static int masterVolume = 100; // 0 a 1000
+        public static bool IsWindowOpen = false;
+        public static Color ClearColor = Color.Black;
 
-        public static int MasterVolume
+        [DllImport("winmm.dll")]
+        static extern Int32 mciSendString(string command, string buffer, int bufferSize, IntPtr hwndCallback);
+
+        public static void Initialize(int width, int height, string title)
         {
-            get { return masterVolume; }
-            set { masterVolume = Math.Max(0, Math.Min(1000, value)); }
-        }
-
-        public static void Initialize(string title = "Game", int width = 800, int height = 600, bool fullscreen = false)
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            window = new GameForm
-            {
-                Text = title,
-                ClientSize = new Size(width, height),
-                StartPosition = FormStartPosition.CenterScreen
-            };
-            if (fullscreen)
-                window.WindowState = FormWindowState.Maximized;
+            window = new Form1(width, height, title);
             window.FormClosed += (s, e) => IsWindowOpen = false;
             window.KeyDown += (s, e) =>
             {
@@ -99,14 +67,11 @@ namespace EngineGDI
 
         public static void PlaySound(string path)
         {
-            // Usamos MCI para permitir sonidos superpuestos
-            string alias = "Snd_" + Guid.NewGuid().ToString("N");
+            string alias = "s" + path.GetHashCode();
+            mciSendString($"open \"{path}\" alias {alias}", null, 0, IntPtr.Zero);
             
-            // Abrir el archivo como mpegvideo (suele tener mejor soporte de volumen en MCI)
-            mciSendString($"open \"{path}\" type mpegvideo alias {alias} wait", null, 0, IntPtr.Zero);
-            
-            // Intentar setear volumen (algunos drivers prefieren 'setaudio', otros 'set')
-            // El rango suele ser 0-1000
+            // Ajustar volumen (opcional, 0-1000)
+            int masterVolume = 500; 
             mciSendString($"setaudio {alias} volume to {masterVolume}", null, 0, IntPtr.Zero);
             mciSendString($"set {alias} volume to {masterVolume}", null, 0, IntPtr.Zero);
             
@@ -184,14 +149,14 @@ namespace EngineGDI
             });
         }
 
-        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontPath = null)
-        {
-            DrawText(text, position.X, position.Y, color, size, offsetX, offsetY, fontPath);
-        }
-
         public static void DrawText(string text, Transform transform, Color color, int size = 12, string fontPath = null)
         {
             DrawText(text, transform.Position.X, transform.Position.Y, color, size, transform.Origin.X, transform.Origin.Y, fontPath);
+        }
+
+        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontPath = null)
+        {
+            DrawText(text, position.X, position.Y, color, size, offsetX, offsetY, fontPath);
         }
 
         public static void DrawRectangle(float x, float y, float width, float height, Color color, bool fill = true, float offsetX = 0f, float offsetY = 0f)
@@ -199,11 +164,11 @@ namespace EngineGDI
             drawQueue.Add(new DrawCommand
             {
                 Type = CommandType.Rectangle,
+                Color = color,
                 X = x,
                 Y = y,
                 Width = width,
                 Height = height,
-                Color = color,
                 Fill = fill,
                 OffsetX = offsetX,
                 OffsetY = offsetY
@@ -260,16 +225,45 @@ namespace EngineGDI
             debugMessages.Add(message);
         }
 
-        public static void ClearDebug()
+        public static void Render()
         {
+            window.Invalidate();
+            UpdateWindow();
             debugMessages.Clear();
         }
 
-        private class GameForm : Form
+        private enum CommandType { Texture, Text, Rectangle }
+
+        private struct DrawCommand
+        {
+            public CommandType Type;
+            public string TexturePath;
+            public string Text;
+            public string FontPath;
+            public float X, Y;
+            public float ScaleX, ScaleY;
+            public float Angle;
+            public float Width, Height;
+            public Color Color;
+            public int FontSize;
+            public bool Fill;
+            public float OffsetX, OffsetY;
+        }
+
+        private class Form1 : Form
         {
             public Color ClearColor = Color.Black;
-            public GameForm()
+            public Form1(int width, int height, string title)
             {
+                this.ClientSize = new Size(width, height);
+                this.Text = title;
+                this.FormBorderStyle = FormBorderStyle.FixedSingle;
+                this.MaximizeBox = false;
+                this.BackColor = Color.Black;
+            }
+            protected override void OnCreateControl()
+            {
+                base.OnCreateControl();
                 DoubleBuffered = true;
             }
             protected override void OnPaint(PaintEventArgs e)

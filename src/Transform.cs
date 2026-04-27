@@ -16,5 +16,14 @@ namespace EngineGDI
             Origin = new Vector2f(0, 0);
             Size = new Vector2f(0, 0);
         }
+
+        public Transform(Vector2f position, float scale = 1.0f)
+        {
+            Position = position;
+            Scale = new Vector2f(scale, scale);
+            Angle = 0;
+            Origin = new Vector2f(0, 0);
+            Size = new Vector2f(0, 0);
+        }
     }
 }
