@@ -5,12 +5,6 @@ using System.Windows.Forms;
 
 namespace EngineGDI
 {
-    public enum GameState
-    {
-        Menu,
-        Playing
-    }
-
     static class Program
     {
         private static GameState currentState = GameState.Menu;
