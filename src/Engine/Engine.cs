@@ -13,11 +13,18 @@ namespace EngineGDI
         [DllImport("winmm.dll")]
         private static extern long mciSendString(string strCommand, StringBuilder strReturn, int iReturnLength, IntPtr hwndCallback);
 
+        private enum CommandType { Texture, Text, Rectangle }
         private class DrawCommand
         {
+            public CommandType Type;
             public string TexturePath;
             public float X, Y, ScaleX, ScaleY;
             public float Angle, OffsetX, OffsetY;
+            public string Text;
+            public Color Color;
+            public int FontSize;
+            public float Width, Height;
+            public bool Fill;
         }
         private static Dictionary<string, Image> textures = new Dictionary<string, Image>();
         private static List<DrawCommand> drawQueue = new List<DrawCommand>();
@@ -108,6 +115,7 @@ namespace EngineGDI
                 textures[path] = Image.FromFile(path);
             drawQueue.Add(new DrawCommand
             {
+                Type = CommandType.Texture,
                 TexturePath = path,
                 X = x,
                 Y = y,
@@ -117,6 +125,62 @@ namespace EngineGDI
                 OffsetX = offsetX,
                 OffsetY = offsetY
             });
+        }
+
+        public static void Draw(string path, Transform transform)
+        {
+            Draw(path, transform.Position.X, transform.Position.Y, transform.Scale.X, transform.Scale.Y, transform.Angle, transform.Origin.X, transform.Origin.Y);
+        }
+
+        public static void DrawText(string text, float x, float y, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f)
+        {
+            drawQueue.Add(new DrawCommand
+            {
+                Type = CommandType.Text,
+                Text = text,
+                X = x,
+                Y = y,
+                Color = color,
+                FontSize = size,
+                OffsetX = offsetX,
+                OffsetY = offsetY
+            });
+        }
+
+        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f)
+        {
+            DrawText(text, position.X, position.Y, color, size, offsetX, offsetY);
+        }
+
+        public static void DrawText(string text, Transform transform, Color color, int size = 12)
+        {
+            DrawText(text, transform.Position.X, transform.Position.Y, color, size, transform.Origin.X, transform.Origin.Y);
+        }
+
+        public static void DrawRectangle(float x, float y, float width, float height, Color color, bool fill = true, float offsetX = 0f, float offsetY = 0f)
+        {
+            drawQueue.Add(new DrawCommand
+            {
+                Type = CommandType.Rectangle,
+                X = x,
+                Y = y,
+                Width = width,
+                Height = height,
+                Color = color,
+                Fill = fill,
+                OffsetX = offsetX,
+                OffsetY = offsetY
+            });
+        }
+
+        public static void DrawRectangle(Vector2f position, float width, float height, Color color, bool fill = true, float offsetX = 0f, float offsetY = 0f)
+        {
+            DrawRectangle(position.X, position.Y, width, height, color, fill, offsetX, offsetY);
+        }
+
+        public static void DrawRectangle(Transform transform, float width, float height, Color color, bool fill = true)
+        {
+            DrawRectangle(transform.Position.X, transform.Position.Y, width, height, color, fill, transform.Origin.X, transform.Origin.Y);
         }
 
         public static void Clear(Color color)
@@ -177,21 +241,48 @@ namespace EngineGDI
                 e.Graphics.Clear(ClearColor);
                 foreach (var cmd in drawQueue)
                 {
-                    if (textures.ContainsKey(cmd.TexturePath))
+                    if (cmd.Type == CommandType.Texture)
                     {
-                        var img = textures[cmd.TexturePath];
-                        float width = img.Width * cmd.ScaleX;
-                        float height = img.Height * cmd.ScaleY;
-                        e.Graphics.TranslateTransform(cmd.X, cmd.Y);
-                        e.Graphics.RotateTransform(cmd.Angle);
-                        e.Graphics.DrawImage(
-                            img,
-                            -cmd.OffsetX * width,
-                            -cmd.OffsetY * height,
-                            width,
-                            height
-                        );
-                        e.Graphics.ResetTransform();
+                        if (textures.ContainsKey(cmd.TexturePath))
+                        {
+                            var img = textures[cmd.TexturePath];
+                            float width = img.Width * cmd.ScaleX;
+                            float height = img.Height * cmd.ScaleY;
+                            e.Graphics.TranslateTransform(cmd.X, cmd.Y);
+                            e.Graphics.RotateTransform(cmd.Angle);
+                            e.Graphics.DrawImage(
+                                img,
+                                -cmd.OffsetX * width,
+                                -cmd.OffsetY * height,
+                                width,
+                                height
+                            );
+                            e.Graphics.ResetTransform();
+                        }
+                    }
+                    else if (cmd.Type == CommandType.Text)
+                    {
+                        using (Font font = new Font("Arial", cmd.FontSize))
+                        using (Brush brush = new SolidBrush(cmd.Color))
+                        {
+                            SizeF size = e.Graphics.MeasureString(cmd.Text, font);
+                            float tx = cmd.X - (size.Width * cmd.OffsetX);
+                            float ty = cmd.Y - (size.Height * cmd.OffsetY);
+                            e.Graphics.DrawString(cmd.Text, font, brush, tx, ty);
+                        }
+                    }
+                    else if (cmd.Type == CommandType.Rectangle)
+                    {
+                        using (Brush brush = new SolidBrush(cmd.Color))
+                        using (Pen pen = new Pen(cmd.Color))
+                        {
+                            float rx = cmd.X - (cmd.Width * cmd.OffsetX);
+                            float ry = cmd.Y - (cmd.Height * cmd.OffsetY);
+                            if (cmd.Fill)
+                                e.Graphics.FillRectangle(brush, rx, ry, cmd.Width, cmd.Height);
+                            else
+                                e.Graphics.DrawRectangle(pen, rx, ry, cmd.Width, cmd.Height);
+                        }
                     }
                 }
                 float debugY = 10;
