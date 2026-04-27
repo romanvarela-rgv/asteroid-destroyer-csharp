@@ -11,7 +11,7 @@ namespace EngineGDI
         public void Initialize()
         {
             List<string> menuOptions = new List<string> { "INICIAR JUEGO", "SALIR" };
-            mainMenu = new Menu(menuOptions, Program.SCREEN_WIDTH / 2 - 100, Program.SCREEN_HEIGHT / 2 - 50);
+            mainMenu = new Menu(menuOptions, Program.SCREEN_WIDTH / 2, Program.SCREEN_HEIGHT / 2 - 20);
             
             mainMenu.OnOptionSelected += (index) =>
             {
