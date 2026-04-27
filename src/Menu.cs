@@ -37,7 +37,12 @@ namespace EngineGDI
             foreach (var opt in options)
             {
                 Text item = new Text(opt, 0, 0, fontSize);
-                item.Transform.Origin = new Vector2f(0.5f, 0.5f); // Centrar cada ítem
+                
+                // Al ser Transform un struct, hay que copiarlo, modificarlo y volverlo a asignar
+                Transform t = item.Transform;
+                t.Origin = new Vector2f(0.5f, 0.5f);
+                item.Transform = t;
+
                 menuItems.Add(item);
             }
             UpdateItemsPositions();
