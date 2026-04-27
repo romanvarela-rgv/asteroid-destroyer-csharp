@@ -43,8 +43,10 @@ namespace EngineGDI
 
             foreach (var opt in options)
             {
-                Text item = new Text(opt, 0, 0, fontSize, fontPath);
+                Text item = new Text(opt, 0, 0);
+                item.SetFont(fontPath, fontSize);
                 
+                // Corregimos CS1612: al ser Transform un struct, hay que copiarlo, modificarlo y volverlo a asignar
                 Transform t = item.Transform;
                 t.Origin = new Vector2f(0.5f, 0.5f);
                 item.Transform = t;
