@@ -26,6 +26,12 @@ namespace EngineGDI
             this.fontPath = fontPath;
         }
 
+        public void SetFont(string path, int size)
+        {
+            this.fontPath = path;
+            this.fontSize = size;
+        }
+
         public void Draw()
         {
             Engine.DrawText(
