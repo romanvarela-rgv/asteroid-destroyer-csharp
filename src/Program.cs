@@ -30,41 +30,51 @@ namespace EngineGDI
         [STAThread]
         static void Main()
         {
+            // 1. Inicialización del Motor
             Engine.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Asteroids GDI+");
 
+            // 2. Inicialización de Componentes
             InitializeMenu();
             InitializeGame();
 
+            // 3. Bucle Principal
             while (Engine.IsWindowOpen)
             {
                 calcDeltatime();
 
-                // Update
-                if (currentState == GameState.Menu)
-                {
-                    mainMenu.Update(deltaTime);
-                }
-                else if (currentState == GameState.Playing)
-                {
-                    UpdateGame(deltaTime);
-                    
-                    if (Engine.OnKeyDown(Keys.Escape))
-                    {
-                        currentState = GameState.Menu;
-                    }
-                }
-
-                // Draw
-                if (currentState == GameState.Menu)
-                {
-                    mainMenu.Draw();
-                }
-                else if (currentState == GameState.Playing)
-                {
-                    DrawGame();
-                }
+                Update();
+                Draw();
 
                 Engine.Render();
+            }
+        }
+
+        private static void Update()
+        {
+            if (currentState == GameState.Menu)
+            {
+                mainMenu.Update(deltaTime);
+            }
+            else if (currentState == GameState.Playing)
+            {
+                UpdateGame(deltaTime);
+                
+                if (Engine.OnKeyDown(Keys.Escape))
+                {
+                    currentState = GameState.Menu;
+                }
+            }
+        }
+
+        private static void Draw()
+        {
+            if (currentState == GameState.Menu)
+            {
+                mainMenu.Draw();
+            }
+            else if (currentState == GameState.Playing)
+            {
+                DrawGame();
             }
         }
 
