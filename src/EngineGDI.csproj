@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -46,9 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Engine.cs" />
+    <Compile Include="Animation.cs" />
+    <Compile Include="Asteroid.cs" />
+    <Compile Include="Bullet.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="Engine\Engine.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Transform.cs" />
+    <Compile Include="Vector2f.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -73,97 +79,128 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="cancha.png">
+    <Content Include="..\assets\EngineGDI\textures\cancha.png">
+      <Link>assets\textures\cancha.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="explosion-42132.wav">
+    <Content Include="..\assets\EngineGDI\textures\messi.png">
+      <Link>assets\textures\messi.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="gunshot-352466.wav">
+    <Content Include="..\assets\EngineGDI\textures\test.png">
+      <Link>assets\textures\test.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="laser-zap-90575.wav">
+    <Content Include="..\assets\EngineGDI\textures\victoria_2.png">
+      <Link>assets\textures\victoria_2.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="messi.png">
+    <Content Include="..\assets\EngineGDI\sounds\explosion-42132.wav">
+      <Link>assets\sounds\explosion-42132.wav</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="pistol-shot-233473.wav">
+    <Content Include="..\assets\EngineGDI\sounds\gunshot-352466.wav">
+      <Link>assets\sounds\gunshot-352466.wav</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="sound.wav">
+    <Content Include="..\assets\EngineGDI\sounds\laser-zap-90575.wav">
+      <Link>assets\sounds\laser-zap-90575.wav</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="test.png">
+    <Content Include="..\assets\EngineGDI\sounds\pistol-shot-233473.wav">
+      <Link>assets\sounds\pistol-shot-233473.wav</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\1.png">
+    <Content Include="..\assets\EngineGDI\sounds\sound.wav">
+      <Link>assets\sounds\sound.wav</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\2.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\1.png">
+      <Link>assets\textures\Animations\1.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\3.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\2.png">
+      <Link>assets\textures\Animations\2.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\4.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\3.png">
+      <Link>assets\textures\Animations\3.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\5.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\4.png">
+      <Link>assets\textures\Animations\4.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\6.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\5.png">
+      <Link>assets\textures\Animations\5.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\7.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\6.png">
+      <Link>assets\textures\Animations\6.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\8.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\7.png">
+      <Link>assets\textures\Animations\7.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle\0.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\8.png">
+      <Link>assets\textures\Animations\8.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle\1.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle\0.png">
+      <Link>assets\textures\Animations\Idle\0.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle\2.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle\1.png">
+      <Link>assets\textures\Animations\Idle\1.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle\3.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle\2.png">
+      <Link>assets\textures\Animations\Idle\2.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito1.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle\3.png">
+      <Link>assets\textures\Animations\Idle\3.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito10.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito1.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito1.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito2.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito2.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito2.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito3.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito3.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito3.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito4.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito4.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito4.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito5.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito5.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito5.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito6.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito6.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito6.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito7.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito7.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito7.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito8.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito8.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito8.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Animations\Idle_e\meteorito9.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito9.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito9.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="victoria_2.png">
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito10.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito10.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
