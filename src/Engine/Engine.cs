@@ -21,6 +21,7 @@ namespace EngineGDI
             public float X, Y, ScaleX, ScaleY;
             public float Angle, OffsetX, OffsetY;
             public string Text;
+            public string FontFamily;
             public Color Color;
             public int FontSize;
             public float Width, Height;
@@ -132,21 +133,22 @@ namespace EngineGDI
             Draw(path, transform.Position.X, transform.Position.Y, transform.Scale.X, transform.Scale.Y, transform.Angle, transform.Origin.X, transform.Origin.Y);
         }
 
-        public static float GetTextWidth(string text, int fontSize)
+        public static float GetTextWidth(string text, int fontSize, string fontFamily = "Arial")
         {
-            using (Font font = new Font("Arial", fontSize))
+            using (Font font = new Font(fontFamily, fontSize))
             using (Graphics g = window.CreateGraphics())
             {
                 return g.MeasureString(text, font).Width;
             }
         }
 
-        public static void DrawText(string text, float x, float y, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f)
+        public static void DrawText(string text, float x, float y, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontFamily = "Arial")
         {
             drawQueue.Add(new DrawCommand
             {
                 Type = CommandType.Text,
                 Text = text,
+                FontFamily = fontFamily,
                 X = x,
                 Y = y,
                 Color = color,
@@ -156,14 +158,14 @@ namespace EngineGDI
             });
         }
 
-        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f)
+        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontFamily = "Arial")
         {
-            DrawText(text, position.X, position.Y, color, size, offsetX, offsetY);
+            DrawText(text, position.X, position.Y, color, size, offsetX, offsetY, fontFamily);
         }
 
-        public static void DrawText(string text, Transform transform, Color color, int size = 12)
+        public static void DrawText(string text, Transform transform, Color color, int size = 12, string fontFamily = "Arial")
         {
-            DrawText(text, transform.Position.X, transform.Position.Y, color, size, transform.Origin.X, transform.Origin.Y);
+            DrawText(text, transform.Position.X, transform.Position.Y, color, size, transform.Origin.X, transform.Origin.Y, fontFamily);
         }
 
         public static void DrawRectangle(float x, float y, float width, float height, Color color, bool fill = true, float offsetX = 0f, float offsetY = 0f)
@@ -271,7 +273,7 @@ namespace EngineGDI
                     }
                     else if (cmd.Type == CommandType.Text)
                     {
-                        using (Font font = new Font("Arial", cmd.FontSize))
+                        using (Font font = new Font(cmd.FontFamily ?? "Arial", cmd.FontSize))
                         using (Brush brush = new SolidBrush(cmd.Color))
                         {
                             SizeF size = e.Graphics.MeasureString(cmd.Text, font);

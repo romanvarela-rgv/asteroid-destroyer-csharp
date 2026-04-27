@@ -14,6 +14,7 @@ namespace EngineGDI
         private Color normalColor = Color.White;
         private Color selectedColor = Color.Cyan;
         private int fontSize;
+        private string fontFamily;
         private float spacing;
 
         // Variables para la animación del selector
@@ -32,23 +33,24 @@ namespace EngineGDI
             } 
         }
 
-        public Menu(List<string> options, float x, float y, int fontSize = 30)
+        public Menu(List<string> options, float x, float y, int fontSize = 30, string fontFamily = "Arial")
         {
             this.transform = new Transform(x, y);
             this.fontSize = fontSize;
+            this.fontFamily = fontFamily;
             this.selectedIndex = 0;
             this.spacing = fontSize * 1.8f;
 
             foreach (var opt in options)
             {
-                Text item = new Text(opt, 0, 0, fontSize);
+                Text item = new Text(opt, 0, 0, fontSize, fontFamily);
                 
                 Transform t = item.Transform;
                 t.Origin = new Vector2f(0.5f, 0.5f);
                 item.Transform = t;
 
                 menuItems.Add(item);
-                itemWidths.Add(Engine.GetTextWidth(opt, fontSize));
+                itemWidths.Add(Engine.GetTextWidth(opt, fontSize, fontFamily));
             }
 
             UpdateItemsPositions();
@@ -92,9 +94,9 @@ namespace EngineGDI
             if (menuItems.Count > 0)
             {
                 Vector2f targetPos = menuItems[selectedIndex].Transform.Position;
-                float targetWidth = itemWidths[selectedIndex] + 20; // Un poco más ancho que el texto
+                float targetWidth = itemWidths[selectedIndex] + 20;
 
-                float speed = 15f; // Ajusta la velocidad de la animación
+                float speed = 15f;
                 selectorPos = Vector2f.Lerp(selectorPos, targetPos, deltaTime * speed);
                 selectorWidth = Vector2f.Lerp(selectorWidth, targetWidth, deltaTime * speed);
             }
