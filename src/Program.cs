@@ -34,8 +34,8 @@ namespace EngineGDI
             // 3. Bucle Principal
             while (Engine.IsWindowOpen)
             {
+                Engine.UpdateWindow();
                 calcDeltatime();
-
                 Update();
                 Draw();
 
@@ -45,31 +45,70 @@ namespace EngineGDI
 
         private static void Update()
         {
-            if (currentState == GameState.Menu)
+
+            switch (currentState)
             {
+                case GameState.Menu:
                 mainMenu.Update(deltaTime);
+                    break;
+                    
+                case GameState.Playing:
+                    UpdateGame(deltaTime);
+
+                    if (GameManager.Instance.IsGameOver)
+                        currentState = GameState.GameOver;
+
+                    if (asteroids.Count == 0)
+                        currentState = GameState.Victory;
+                    break;
+
+                case GameState.GameOver:
+                case GameState.Victory:
+                    if (Engine.OnKeyDown(Keys.R)) 
+                    {
+                        RestartGame();
+
+                    }
+                    break;
             }
-            else if (currentState == GameState.Playing)
-            {
-                UpdateGame(deltaTime);
-                
-                if (Engine.OnKeyDown(Keys.Escape))
-                {
-                    currentState = GameState.Menu;
-                }
-            }
+            
         }
 
         private static void Draw()
         {
-            if (currentState == GameState.Menu)
+            switch(currentState)
             {
-                mainMenu.Draw();
+                case GameState.Menu:
+                    mainMenu.Draw();
+                    break;
+                    
+                case GameState.Playing:
+                    DrawGame();
+                    break;
+                case GameState.Paused:
+                    DrawGame();
+                    Engine.DebugLog("--- PAUSED ---");
+                    Engine.DebugLog("Press P to Resume");
+                    break; 
+                case GameState.GameOver:
+                    DrawGame();
+                    Engine.DebugLog("--- GAME OVER ---");
+                    Engine.DebugLog("Press R to Try Again");
+                    break;
+                case GameState.Victory:
+                    DrawGame();
+                    Engine.DebugLog("--- VICTORY! ---");
+                    Engine.DebugLog("Press R to Play Again");
+                    break;
             }
-            else if (currentState == GameState.Playing)
-            {
-                DrawGame();
-            }
+           
+        }
+
+        private static void RestartGame()
+        {
+            GameManager.Instance.ResetGame();
+            InitializeGame();
+            currentState = GameState.Playing;
         }
 
         public static void InitializeMenu()
@@ -165,11 +204,21 @@ namespace EngineGDI
                     // Ahora el tamaño se extrae automáticamente del Transform
                     if (Collision.CheckAABB(a.Transform, b.Transform))
                     {
+                        
                         asteroids.RemoveAt(i);
                         bullets.RemoveAt(j);
                         Engine.PlaySound("assets/sounds/explosion-42132.wav");
                         break;
                     }
+                }
+            }
+            foreach (var asteroid in asteroids)
+            {
+                if (Collision.CheckAABB(p1.Transform, asteroid.Transform))
+                {
+                    GameManager.Instance.IsGameOver = true;
+                    Engine.PlaySound("assets/sounds/explosion-42132.wav");
+                    break;
                 }
             }
         }

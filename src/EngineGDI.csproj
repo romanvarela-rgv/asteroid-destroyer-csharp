@@ -52,6 +52,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Engine\Engine.cs" />
+    <Compile Include="GameManager.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Player.cs" />
