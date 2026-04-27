@@ -53,6 +53,10 @@ namespace EngineGDI
                     break;
                     
                 case GameState.Playing:
+                    if (Engine.OnKeyDown(Keys.P))
+                    {
+                        currentState = GameState.Paused;
+                    }
                     UpdateGame(deltaTime);
 
                     if (GameManager.Instance.IsGameOver)
@@ -60,6 +64,12 @@ namespace EngineGDI
 
                     if (asteroids.Count == 0)
                         currentState = GameState.Victory;
+                    break;
+                case GameState.Paused:
+                    if(Engine.OnKeyDown(Keys.P))
+                    {
+                        currentState = GameState.Playing;
+                    }
                     break;
 
                 case GameState.GameOver:
