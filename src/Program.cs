@@ -5,9 +5,15 @@ using System.Windows.Forms;
 
 namespace EngineGDI
 {
+    public enum GameState
+    {
+        Menu,
+        Playing
+    }
+
     static class Program
     {
-        private static IGameState currentState;
+        private static GameState currentState = GameState.Menu;
         public static float deltaTime;
         static DateTime lastFrameTime = DateTime.Now;
         public static bool showDebug = true;
@@ -15,51 +21,72 @@ namespace EngineGDI
         public static int SCREEN_WIDTH = 1024;
         public static int SCREEN_HEIGHT = 544;
 
-        // Entidades del Juego (Program como abstracción de Game)
+        // Entidades del Juego
         public static Player p1;
         public static List<Asteroid> asteroids = new List<Asteroid>();
         public static List<Bullet> bullets = new List<Bullet>();
+        private static Menu mainMenu;
 
         [STAThread]
         static void Main()
         {
-            Engine.Initialize("ASTEROIDS DESTROYER", SCREEN_WIDTH, SCREEN_HEIGHT, false);
+            Engine.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Asteroids GDI+");
 
-            // Iniciamos con el estado de Menú
-            ChangeState(new MenuState());
+            InitializeMenu();
+            InitializeGame();
 
             while (Engine.IsWindowOpen)
             {
-                Engine.UpdateWindow();
                 calcDeltatime();
 
-                // Delegamos la lógica al estado actual
-                if (currentState != null)
+                // Update
+                if (currentState == GameState.Menu)
                 {
-                    currentState.Update(deltaTime);
-                    currentState.Draw();
+                    mainMenu.Update(deltaTime);
+                }
+                else if (currentState == GameState.Playing)
+                {
+                    UpdateGame(deltaTime);
+                    
+                    if (Engine.OnKeyDown(Keys.Escape))
+                    {
+                        currentState = GameState.Menu;
+                    }
                 }
 
-                Engine.Clear(Color.Black);
-                
-                if (showDebug)
+                // Draw
+                if (currentState == GameState.Menu)
                 {
-                    Engine.ClearDebug();
-                    Engine.DebugLog($"FPS: {Math.Round(1.0f / deltaTime)}");
-                    // Los estados pueden añadir sus propios logs
+                    mainMenu.Draw();
                 }
-                
-                Engine.Window.Invalidate();
+                else if (currentState == GameState.Playing)
+                {
+                    DrawGame();
+                }
+
+                Engine.Render();
             }
         }
 
-        public static void ChangeState(IGameState newState)
+        public static void InitializeMenu()
         {
-            currentState = newState;
-            currentState.Initialize();
+            List<string> menuOptions = new List<string> { "INICIAR JUEGO", "SALIR" };
+            mainMenu = new Menu(menuOptions, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20);
+            
+            mainMenu.OnOptionSelected += (index) =>
+            {
+                if (index == 0)
+                {
+                    InitializeGame();
+                    currentState = GameState.Playing;
+                }
+                else if (index == 1)
+                {
+                    Application.Exit();
+                }
+            };
         }
 
-        // Lógica del Juego (Program como abstracción de Game)
         public static void InitializeGame()
         {
             p1 = new Player("assets/textures/test.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
@@ -75,14 +102,12 @@ namespace EngineGDI
 
         public static void UpdateGame(float deltaTime)
         {
-            // Entrada de disparo
             if (Engine.OnKeyDown(Keys.Space))
             {
                 bullets.Add(new Bullet(p1.Transform.Position.X, p1.Transform.Position.Y, p1.Transform.Angle, p1.Velocity));
                 Engine.PlaySound("assets/sounds/laser-zap-90575.wav");
             }
 
-            // Actualización de entidades
             p1.Update(deltaTime);
 
             foreach (var asteroid in asteroids)
@@ -149,7 +174,6 @@ namespace EngineGDI
         {
             TimeSpan deltaSpan = DateTime.Now - lastFrameTime;
             deltaTime = (float)deltaSpan.TotalSeconds;
-            if (deltaTime > 0.1f) deltaTime = 0.1f; 
             lastFrameTime = DateTime.Now;
         }
     }
