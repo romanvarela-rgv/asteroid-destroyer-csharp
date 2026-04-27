@@ -51,8 +51,13 @@
     <Compile Include="Bullet.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Engine\Engine.cs" />
+    <Compile Include="IGameState.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="MenuState.cs" />
+    <Compile Include="PlayingState.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Text.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="Vector2f.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
