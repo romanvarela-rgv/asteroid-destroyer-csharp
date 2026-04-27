@@ -151,7 +151,7 @@ namespace EngineGDI
             return fontFamilies[path];
         }
 
-        public static float GetTextWidth(string text, int fontSize, string fontPath = "Arial")
+        public static float GetTextWidth(string text, int fontSize, string fontPath = null)
         {
             FontFamily family = GetFontFamily(fontPath);
             using (Font font = new Font(family, fontSize))
@@ -161,7 +161,7 @@ namespace EngineGDI
             }
         }
 
-        public static void DrawText(string text, float x, float y, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontPath = "Arial")
+        public static void DrawText(string text, float x, float y, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontPath = null)
         {
             drawQueue.Add(new DrawCommand
             {
@@ -177,12 +177,12 @@ namespace EngineGDI
             });
         }
 
-        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontPath = "Arial")
+        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontPath = null)
         {
             DrawText(text, position.X, position.Y, color, size, offsetX, offsetY, fontPath);
         }
 
-        public static void DrawText(string text, Transform transform, Color color, int size = 12, string fontPath = "Arial")
+        public static void DrawText(string text, Transform transform, Color color, int size = 12, string fontPath = null)
         {
             DrawText(text, transform.Position.X, transform.Position.Y, color, size, transform.Origin.X, transform.Origin.Y, fontPath);
         }

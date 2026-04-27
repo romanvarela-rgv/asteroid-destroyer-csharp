@@ -17,7 +17,7 @@ namespace EngineGDI
         public int FontSize { get => fontSize; set => fontSize = value; }
         public string FontPath { get => fontPath; set => fontPath = value; }
 
-        public Text(string content, float x, float y, int fontSize = 24, string fontPath = "Arial")
+        public Text(string content, float x, float y, int fontSize = 24, string fontPath = null)
         {
             this.content = content;
             this.transform = new Transform(x, y);
@@ -26,7 +26,7 @@ namespace EngineGDI
             this.fontPath = fontPath;
         }
 
-        public void SetFont(string path, int size)
+        public void SetFont(string path = null, int size = 24)
         {
             this.fontPath = path;
             this.fontSize = size;

@@ -33,7 +33,7 @@ namespace EngineGDI
             } 
         }
 
-        public Menu(List<string> options, float x, float y, int fontSize = 30, string fontPath = "Arial")
+        public Menu(List<string> options, float x, float y, int fontSize = 30, string fontPath = null)
         {
             this.transform = new Transform(x, y);
             this.fontSize = fontSize;
@@ -45,8 +45,7 @@ namespace EngineGDI
             {
                 Text item = new Text(opt, 0, 0);
                 item.SetFont(fontPath, fontSize);
-                
-                // Corregimos CS1612: al ser Transform un struct, hay que copiarlo, modificarlo y volverlo a asignar
+                                
                 Transform t = item.Transform;
                 t.Origin = new Vector2f(0.5f, 0.5f);
                 item.Transform = t;
