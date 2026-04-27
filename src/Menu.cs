@@ -105,10 +105,9 @@ namespace EngineGDI
 
         public void Draw()
         {
-            // Dibujar el selector animado
+            // Dibujar el selector animado usando la sobrecarga de Vector2f
             Engine.DrawRectangle(
-                selectorPos.X, 
-                selectorPos.Y, 
+                selectorPos, 
                 selectorWidth, 
                 fontSize + 10, 
                 Color.FromArgb(80, selectedColor), 
