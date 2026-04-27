@@ -21,6 +21,7 @@ namespace EngineGDI
 
             float scale = (float)(random.NextDouble() * 0.5 + 0.5);
             temp.Scale = new Vector2f(scale, scale);
+            temp.Origin = new Vector2f(0.5f, 0.5f); // Centrar el asteroide
             this.Transform = temp;
 
             int spriteIndex = random.Next(1, 11);
@@ -38,7 +39,7 @@ namespace EngineGDI
 
         public override void Draw()
         {
-            Engine.Draw(sprite, Transform.Position.X, Transform.Position.Y, Transform.Scale.X, Transform.Scale.Y, Transform.Angle, 0.5f, 0.5f);
+            Engine.Draw(sprite, Transform);
         }
     }
 }

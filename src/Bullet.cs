@@ -18,6 +18,10 @@ namespace EngineGDI
             float angleRad = (float)(angle * Math.PI / 180.0f);
             
             this.Velocity = new Vector2f((float)Math.Cos(angleRad), (float)Math.Sin(angleRad)) * speed + shipVelocity;
+            
+            Transform temp = Transform;
+            temp.Origin = new Vector2f(0.5f, 0.5f);
+            this.Transform = temp;
         }
 
         public override void Update(float deltaTime)
@@ -28,7 +32,7 @@ namespace EngineGDI
 
         public override void Draw()
         {
-            Engine.Draw("assets/textures/Animations/1.png", Transform.Position.X, Transform.Position.Y, 1.0f, 1.0f, 0, 0.5f, 0.5f);
+            Engine.Draw("assets/textures/Animations/1.png", Transform);
         }
     }
 }

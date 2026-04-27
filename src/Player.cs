@@ -20,6 +20,9 @@ namespace EngineGDI
         public Player(string sprite, float x, float y) : base(x, y, 0.4f)
         {
             this.sprite = sprite;
+            Transform temp = Transform;
+            temp.Origin = new Vector2f(0.5f, 0.5f); // Centrar el jugador
+            Transform = temp;
         }
 
         public override void Update(float deltaTime)
@@ -45,7 +48,7 @@ namespace EngineGDI
 
         public override void Draw()
         {
-            Engine.Draw(sprite, Transform.Position.X, Transform.Position.Y, Transform.Scale.X, Transform.Scale.Y, Transform.Angle, 0.5f, 0.5f);
+            Engine.Draw(sprite, Transform);
         }
 
         protected override void Wrap()
