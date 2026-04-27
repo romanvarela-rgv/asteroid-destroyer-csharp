@@ -161,9 +161,11 @@ namespace EngineGDI
                 for (int j = bullets.Count - 1; j >= 0; j--)
                 {
                     var b = bullets[j];
-                    float dist = Vector2f.Distance(a.Transform.Position, b.Transform.Position);
                     
-                    if (dist < 40 * a.Transform.Scale.X)
+                    // Usamos la nueva clase Collision con AABB
+                    // Asteroides: tamaño base ~80x80
+                    // Balas: tamaño base ~10x10
+                    if (Collision.CheckAABB(a.Transform, new Vector2f(80, 80), b.Transform, new Vector2f(10, 10)))
                     {
                         asteroids.RemoveAt(i);
                         bullets.RemoveAt(j);
