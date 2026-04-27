@@ -4,11 +4,12 @@ namespace EngineGDI
 {
     public abstract class Character
     {
-        // Campos privados (Ocultamiento de datos)
+        // Campos privados
         private Transform transform;
         private Vector2f velocity;
+        protected string sprite;
 
-        // Propiedades públicas (Encapsulamiento con get y set)
+        // Propiedades públicas
         public Transform Transform 
         { 
             get { return transform; } 
@@ -23,12 +24,19 @@ namespace EngineGDI
         
         public Character(float x, float y, float scale = 1f)
         {
-            this.transform = new Transform(x, y, scale, scale, 0);
+            this.transform = new Transform(x, y, scale);
+        }
+        
+        protected void SetSprite(string path)
+        {
+            this.sprite = path;
+            Transform t = this.Transform;
+            t.Size = Engine.GetTextureSize(path);
+            this.Transform = t;
         }
 
         public virtual void Update(float deltaTime)
         {
-            // Usamos las propiedades internas
             transform.Position += velocity * deltaTime;
             Wrap();
         }

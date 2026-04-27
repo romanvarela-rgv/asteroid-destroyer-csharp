@@ -114,6 +114,13 @@ namespace EngineGDI
             mciSendString($"play {alias} from 0", null, 0, IntPtr.Zero);
         }
 
+        public static Vector2f GetTextureSize(string path)
+        {
+            if (!textures.ContainsKey(path))
+                textures[path] = Image.FromFile(path);
+            return new Vector2f(textures[path].Width, textures[path].Height);
+        }
+
         public static void Draw(string path, float x, float y, float scaleX = 1f, float scaleY = 1f, float angle = 0f, float offsetX = 0f, float offsetY = 0f)
         {
             if (!textures.ContainsKey(path))

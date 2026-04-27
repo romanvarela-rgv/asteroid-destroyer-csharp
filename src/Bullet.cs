@@ -14,6 +14,8 @@ namespace EngineGDI
 
         public Bullet(float x, float y, float angle, Vector2f shipVelocity) : base(x, y, 1.0f)
         {
+            SetSprite("assets/textures/Animations/1.png");
+
             float speed = 400.0f;
             float angleRad = (float)(angle * Math.PI / 180.0f);
             
@@ -32,7 +34,7 @@ namespace EngineGDI
 
         public override void Draw()
         {
-            Engine.Draw("assets/textures/Animations/1.png", Transform);
+            Engine.Draw(sprite, Transform);
         }
     }
 }

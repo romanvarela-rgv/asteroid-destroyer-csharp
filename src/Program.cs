@@ -162,10 +162,8 @@ namespace EngineGDI
                 {
                     var b = bullets[j];
                     
-                    // Usamos la nueva clase Collision con AABB
-                    // Asteroides: tamaño base ~80x80
-                    // Balas: tamaño base ~10x10
-                    if (Collision.CheckAABB(a.Transform, new Vector2f(80, 80), b.Transform, new Vector2f(10, 10)))
+                    // Ahora el tamaño se extrae automáticamente del Transform
+                    if (Collision.CheckAABB(a.Transform, b.Transform))
                     {
                         asteroids.RemoveAt(i);
                         bullets.RemoveAt(j);

@@ -6,19 +6,15 @@ namespace EngineGDI
     {
         /// <summary>
         /// Comprueba una colisión AABB (Axis-Aligned Bounding Box) entre dos transforms.
+        /// Utiliza automáticamente el campo Size del transform.
         /// </summary>
-        /// <param name="t1">Transform del primer objeto</param>
-        /// <param name="size1">Tamaño base del primer objeto (sin escalar)</param>
-        /// <param name="t2">Transform del segundo objeto</param>
-        /// <param name="size2">Tamaño base del segundo objeto (sin escalar)</param>
-        /// <returns>True si hay colisión</returns>
-        public static bool CheckAABB(Transform t1, Vector2f size1, Transform t2, Vector2f size2)
+        public static bool CheckAABB(Transform t1, Transform t2)
         {
             // Calculamos las dimensiones reales aplicando la escala
-            float w1 = size1.X * t1.Scale.X;
-            float h1 = size1.Y * t1.Scale.Y;
-            float w2 = size2.X * t2.Scale.X;
-            float h2 = size2.Y * t2.Scale.Y;
+            float w1 = t1.Size.X * t1.Scale.X;
+            float h1 = t1.Size.Y * t1.Scale.Y;
+            float w2 = t2.Size.X * t2.Scale.X;
+            float h2 = t2.Size.Y * t2.Scale.Y;
 
             // Calculamos los bordes teniendo en cuenta el origen (pivote)
             float left1 = t1.Position.X - (t1.Origin.X * w1);
@@ -40,11 +36,14 @@ namespace EngineGDI
 
         /// <summary>
         /// Comprueba una colisión circular (por distancia) entre dos transforms.
+        /// Utiliza el tamaño (X o Y) para calcular un radio aproximado si no se especifica.
         /// </summary>
-        public static bool CheckCircle(Transform t1, float radius1, Transform t2, float radius2)
+        public static bool CheckCircle(Transform t1, Transform t2)
         {
+            float r1 = (t1.Size.X / 2f) * t1.Scale.X;
+            float r2 = (t2.Size.X / 2f) * t2.Scale.X;
             float dist = Vector2f.Distance(t1.Position, t2.Position);
-            return dist < (radius1 * t1.Scale.X + radius2 * t2.Scale.X);
+            return dist < (r1 + r2);
         }
     }
 }
