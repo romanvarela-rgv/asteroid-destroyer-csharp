@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Text;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -21,13 +23,15 @@ namespace EngineGDI
             public float X, Y, ScaleX, ScaleY;
             public float Angle, OffsetX, OffsetY;
             public string Text;
-            public string FontFamily;
+            public string FontPath;
             public Color Color;
             public int FontSize;
             public float Width, Height;
             public bool Fill;
         }
         private static Dictionary<string, Image> textures = new Dictionary<string, Image>();
+        private static Dictionary<string, PrivateFontCollection> fontCollections = new Dictionary<string, PrivateFontCollection>();
+        private static Dictionary<string, FontFamily> fontFamilies = new Dictionary<string, FontFamily>();
         private static List<DrawCommand> drawQueue = new List<DrawCommand>();
         private static GameForm window;
         public static bool IsWindowOpen { get; private set; } = false;
@@ -133,22 +137,37 @@ namespace EngineGDI
             Draw(path, transform.Position.X, transform.Position.Y, transform.Scale.X, transform.Scale.Y, transform.Angle, transform.Origin.X, transform.Origin.Y);
         }
 
-        public static float GetTextWidth(string text, int fontSize, string fontFamily = "Arial")
+        private static FontFamily GetFontFamily(string path)
         {
-            using (Font font = new Font(fontFamily, fontSize))
+            if (string.IsNullOrEmpty(path) || path == "Arial") return FontFamily.GenericSansSerif;
+
+            if (!fontFamilies.ContainsKey(path))
+            {
+                PrivateFontCollection pfc = new PrivateFontCollection();
+                pfc.AddFontFile(path);
+                fontCollections[path] = pfc;
+                fontFamilies[path] = pfc.Families[0];
+            }
+            return fontFamilies[path];
+        }
+
+        public static float GetTextWidth(string text, int fontSize, string fontPath = "Arial")
+        {
+            FontFamily family = GetFontFamily(fontPath);
+            using (Font font = new Font(family, fontSize))
             using (Graphics g = window.CreateGraphics())
             {
                 return g.MeasureString(text, font).Width;
             }
         }
 
-        public static void DrawText(string text, float x, float y, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontFamily = "Arial")
+        public static void DrawText(string text, float x, float y, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontPath = "Arial")
         {
             drawQueue.Add(new DrawCommand
             {
                 Type = CommandType.Text,
                 Text = text,
-                FontFamily = fontFamily,
+                FontPath = fontPath,
                 X = x,
                 Y = y,
                 Color = color,
@@ -158,14 +177,14 @@ namespace EngineGDI
             });
         }
 
-        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontFamily = "Arial")
+        public static void DrawText(string text, Vector2f position, Color color, int size = 12, float offsetX = 0f, float offsetY = 0f, string fontPath = "Arial")
         {
-            DrawText(text, position.X, position.Y, color, size, offsetX, offsetY, fontFamily);
+            DrawText(text, position.X, position.Y, color, size, offsetX, offsetY, fontPath);
         }
 
-        public static void DrawText(string text, Transform transform, Color color, int size = 12, string fontFamily = "Arial")
+        public static void DrawText(string text, Transform transform, Color color, int size = 12, string fontPath = "Arial")
         {
-            DrawText(text, transform.Position.X, transform.Position.Y, color, size, transform.Origin.X, transform.Origin.Y, fontFamily);
+            DrawText(text, transform.Position.X, transform.Position.Y, color, size, transform.Origin.X, transform.Origin.Y, fontPath);
         }
 
         public static void DrawRectangle(float x, float y, float width, float height, Color color, bool fill = true, float offsetX = 0f, float offsetY = 0f)
@@ -273,7 +292,8 @@ namespace EngineGDI
                     }
                     else if (cmd.Type == CommandType.Text)
                     {
-                        using (Font font = new Font(cmd.FontFamily ?? "Arial", cmd.FontSize))
+                        FontFamily family = GetFontFamily(cmd.FontPath);
+                        using (Font font = new Font(family, cmd.FontSize))
                         using (Brush brush = new SolidBrush(cmd.Color))
                         {
                             SizeF size = e.Graphics.MeasureString(cmd.Text, font);

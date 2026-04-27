@@ -14,7 +14,7 @@ namespace EngineGDI
         private Color normalColor = Color.White;
         private Color selectedColor = Color.Cyan;
         private int fontSize;
-        private string fontFamily;
+        private string fontPath;
         private float spacing;
 
         // Variables para la animación del selector
@@ -33,24 +33,24 @@ namespace EngineGDI
             } 
         }
 
-        public Menu(List<string> options, float x, float y, int fontSize = 30, string fontFamily = "Arial")
+        public Menu(List<string> options, float x, float y, int fontSize = 30, string fontPath = "Arial")
         {
             this.transform = new Transform(x, y);
             this.fontSize = fontSize;
-            this.fontFamily = fontFamily;
+            this.fontPath = fontPath;
             this.selectedIndex = 0;
             this.spacing = fontSize * 1.8f;
 
             foreach (var opt in options)
             {
-                Text item = new Text(opt, 0, 0, fontSize, fontFamily);
+                Text item = new Text(opt, 0, 0, fontSize, fontPath);
                 
                 Transform t = item.Transform;
                 t.Origin = new Vector2f(0.5f, 0.5f);
                 item.Transform = t;
 
                 menuItems.Add(item);
-                itemWidths.Add(Engine.GetTextWidth(opt, fontSize, fontFamily));
+                itemWidths.Add(Engine.GetTextWidth(opt, fontSize, fontPath));
             }
 
             UpdateItemsPositions();

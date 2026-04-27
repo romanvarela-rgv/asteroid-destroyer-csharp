@@ -9,21 +9,21 @@ namespace EngineGDI
         private Transform transform;
         private Color color;
         private int fontSize;
-        private string fontFamily;
+        private string fontPath;
 
         public string Content { get => content; set => content = value; }
         public Transform Transform { get => transform; set => transform = value; }
         public Color Color { get => color; set => color = value; }
         public int FontSize { get => fontSize; set => fontSize = value; }
-        public string FontFamily { get => fontFamily; set => fontFamily = value; }
+        public string FontPath { get => fontPath; set => fontPath = value; }
 
-        public Text(string content, float x, float y, int fontSize = 24, string fontFamily = "Arial")
+        public Text(string content, float x, float y, int fontSize = 24, string fontPath = "Arial")
         {
             this.content = content;
             this.transform = new Transform(x, y);
             this.color = Color.White;
             this.fontSize = fontSize;
-            this.fontFamily = fontFamily;
+            this.fontPath = fontPath;
         }
 
         public void Draw()
@@ -36,7 +36,7 @@ namespace EngineGDI
                 fontSize, 
                 transform.Origin.X, 
                 transform.Origin.Y,
-                fontFamily
+                fontPath
             );
         }
     }
