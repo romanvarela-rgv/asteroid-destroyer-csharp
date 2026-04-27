@@ -12,7 +12,7 @@ namespace EngineGDI
             set { lifeTime = value; }
         }
 
-        public Bullet(float x, float y, float angle, Vector2f shipVelocity) : base(x, y, 1.0f)
+        public Bullet(Vector2f position, float angle, Vector2f shipVelocity) : base(position, 1.0f)
         {
             SetSprite("assets/textures/Animations/1.png");
 

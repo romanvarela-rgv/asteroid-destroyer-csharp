@@ -22,9 +22,9 @@ namespace EngineGDI
             set { velocity = value; } 
         }
         
-        public Character(float x, float y, float scale = 1f)
+        public Character(Vector2f position, float scale = 1f)
         {
-            this.transform = new Transform(x, y, scale);
+            this.transform = new Transform(position.X, position.Y, scale);
         }
         
         protected void SetSprite(string path)

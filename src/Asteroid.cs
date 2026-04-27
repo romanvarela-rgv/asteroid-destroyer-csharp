@@ -7,14 +7,13 @@ namespace EngineGDI
         private float rotationSpeed;
         private static Random random = new Random();
 
-        public Asteroid(float x, float y) : base(x, y)
+        public Asteroid(Vector2f position) : base(position)
         {
             this.Velocity = new Vector2f(
                 (float)(random.NextDouble() * 100 - 50),
                 (float)(random.NextDouble() * 100 - 50)
             );
 
-            // Seleccionar sprite aleatorio y actualizar tamaño automáticamente
             SetSprite($"assets/textures/Animations/Idle_e/meteorito{random.Next(1, 11)}.png");
 
             Transform temp = Transform;

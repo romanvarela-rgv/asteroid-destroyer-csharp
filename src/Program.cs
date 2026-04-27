@@ -93,14 +93,14 @@ namespace EngineGDI
 
         public static void InitializeGame()
         {
-            p1 = new Player("assets/textures/test.png", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+            p1 = new Player("assets/textures/test.png", new Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
             asteroids.Clear();
             bullets.Clear();
 
             Random rand = new Random();
             for (int i = 0; i < 8; i++)
             {
-                asteroids.Add(new Asteroid(rand.Next(0, SCREEN_WIDTH), rand.Next(0, SCREEN_HEIGHT)));
+                asteroids.Add(new Asteroid(new Vector2f(rand.Next(0, SCREEN_WIDTH), rand.Next(0, SCREEN_HEIGHT))));
             }
         }
 
@@ -108,7 +108,7 @@ namespace EngineGDI
         {
             if (Engine.OnKeyDown(Keys.Space))
             {
-                bullets.Add(new Bullet(p1.Transform.Position.X, p1.Transform.Position.Y, p1.Transform.Angle, p1.Velocity));
+                bullets.Add(new Bullet(p1.Transform.Position, p1.Transform.Angle, p1.Velocity));
                 Engine.PlaySound("assets/sounds/laser-zap-90575.wav");
             }
 

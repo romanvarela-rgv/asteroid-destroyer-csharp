@@ -1,10 +1,11 @@
 using System;
+using System.Windows.Forms;
 
 namespace EngineGDI
 {
     public class Player : Character
     {
-        public Player(string spritePath, float x, float y) : base(x, y, 0.4f)
+        public Player(string spritePath, Vector2f position) : base(position, 0.4f)
         {
             SetSprite(spritePath);
             
@@ -18,20 +19,20 @@ namespace EngineGDI
             float rotationSpeed = 200f;
             float acceleration = 300f;
 
-            if (Engine.IsKeyDown(System.Windows.Forms.Keys.Left) || Engine.IsKeyDown(System.Windows.Forms.Keys.A))
+            if (Engine.IsKeyDown(Keys.Left) || Engine.IsKeyDown(Keys.A))
             {
                 Transform t = Transform;
                 t.Angle -= rotationSpeed * deltaTime;
                 Transform = t;
             }
-            if (Engine.IsKeyDown(System.Windows.Forms.Keys.Right) || Engine.IsKeyDown(System.Windows.Forms.Keys.D))
+            if (Engine.IsKeyDown(Keys.Right) || Engine.IsKeyDown(Keys.D))
             {
                 Transform t = Transform;
                 t.Angle += rotationSpeed * deltaTime;
                 Transform = t;
             }
 
-            if (Engine.IsKeyDown(System.Windows.Forms.Keys.Up) || Engine.IsKeyDown(System.Windows.Forms.Keys.W))
+            if (Engine.IsKeyDown(Keys.Up) || Engine.IsKeyDown(Keys.W))
             {
                 float angleRad = (float)(Transform.Angle * Math.PI / 180.0f);
                 Vector2f dir = new Vector2f((float)Math.Cos(angleRad), (float)Math.Sin(angleRad));
