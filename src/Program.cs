@@ -76,6 +76,7 @@ namespace EngineGDI
                 case GameState.Victory:
                     if (Engine.OnKeyDown(Keys.R)) 
                     {
+                        GameManager.Instance.IsGameOver = false;
                         RestartGame();
 
                     }
@@ -101,7 +102,7 @@ namespace EngineGDI
                     Engine.DebugLog("Press P to Resume");
                     break; 
                 case GameState.GameOver:
-                    DrawGame();
+                    DrawGame(); 
                     Engine.DebugLog("--- GAME OVER ---");
                     Engine.DebugLog("Press R to Try Again");
                     break;
@@ -220,7 +221,12 @@ namespace EngineGDI
                         Engine.PlaySound("assets/sounds/explosion-42132.wav");
                         break;
                     }
+                    if (asteroids.Count == 0 && currentState == GameState.Playing)
+                    {
+                        currentState = GameState.Victory;
+                    }
                 }
+
             }
             foreach (var asteroid in asteroids)
             {
