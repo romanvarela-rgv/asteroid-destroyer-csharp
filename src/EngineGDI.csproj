@@ -47,19 +47,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="AsteroidFactory.cs" />
     <Compile Include="Asteroid.cs" />
     <Compile Include="Bullet.cs" />
+    <Compile Include="BulletPool.cs" />
+    <Compile Include="Enemies.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Engine\Engine.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="IButton.cs" />
+    <Compile Include="IScene.cs" />
+    <Compile Include="ImageButton.cs" />
+    <Compile Include="ImageMenu.cs" />
+    <Compile Include="LoseScene.cs" />
+    <Compile Include="MainMenuScene.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="ObjectPool.cs" />
+    <Compile Include="PlayMenuScene.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="Vector2f.cs" />
+    <Compile Include="WinScene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -206,6 +218,68 @@
     </Content>
     <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito10.png">
       <Link>assets\textures\Animations\Idle_e\meteorito10.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Animations\Idle_e\meteorito11.png">
+      <Link>assets\textures\Animations\Idle_e\meteorito11.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <!-- Escenas -->
+    <Content Include="..\assets\EngineGDI\textures\Scenes\FirstScene.png">
+      <Link>assets\textures\Scenes\FirstScene.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Scenes\MainMenu.png">
+      <Link>assets\textures\Scenes\MainMenu.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Scenes\PlayMenu.png">
+      <Link>assets\textures\Scenes\PlayMenu.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Scenes\WinScene.png">
+      <Link>assets\textures\Scenes\WinScene.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Scenes\LoseScene.png">
+      <Link>assets\textures\Scenes\LoseScene.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <!-- Botones -->
+    <Content Include="..\assets\EngineGDI\textures\Buttons\PlayButton.png">
+      <Link>assets\textures\Buttons\PlayButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\OptionsButton.png">
+      <Link>assets\textures\Buttons\OptionsButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\QuitButton.png">
+      <Link>assets\textures\Buttons\QuitButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\NewGameButton.png">
+      <Link>assets\textures\Buttons\NewGameButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\LoadGameButton.png">
+      <Link>assets\textures\Buttons\LoadGameButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\BackButton.png">
+      <Link>assets\textures\Buttons\BackButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\ContinueButton.png">
+      <Link>assets\textures\Buttons\ContinueButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\RetryButton.png">
+      <Link>assets\textures\Buttons\RetryButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\Continue.png">
+      <Link>assets\textures\Buttons\Continue.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

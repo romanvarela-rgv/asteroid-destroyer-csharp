@@ -2,7 +2,7 @@ using System;
 
 namespace EngineGDI
 {
-    public struct Vector2f
+    public struct Vector2f 
     {
         public float X;
         public float Y;
