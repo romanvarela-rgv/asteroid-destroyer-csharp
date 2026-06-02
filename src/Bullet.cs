@@ -5,6 +5,8 @@ namespace EngineGDI
 {
     public class Bullet : Character
     {
+        public Action<Bullet> OnDeactivate; //Aqui activamosn la logica de las balas
+                                           
         private float lifeTime = 2.0f;
         private Animation animation;
         private string lastFrame = "";
@@ -15,12 +17,13 @@ namespace EngineGDI
             set { lifeTime = value; }
         }
 
-        public bool Active { get; private set; } = true;
+        public bool Active { get; private set; }
 
         //  Constructor
-        public Bullet(Vector2f position, float angle, Vector2f shipVelocity) : base(position, 1.0f)
+        public Bullet() : base(new Vector2f(0,0), 1.0f)
         {
-
+            this.Active = false; //Nacen las balas inactivas 
+            //Se inicializa la animacion 
             animation = new Animation(
                 "bullet",
                 15f,
@@ -34,23 +37,26 @@ namespace EngineGDI
                 true
             );
 
-            SetSprite(animation.CurrentFrame);
-
-            //  Movimiento
-            float speed = 400.0f;
-            float angleRad = (float)(angle * Math.PI / 180.0f);
-
-            this.Velocity = new Vector2f(
-                (float)Math.Cos(angleRad),
-                (float)Math.Sin(angleRad)
-            ) * speed + shipVelocity;
-
-            //  Centro del sprite
-            Transform temp = Transform;
-            temp.Origin = new Vector2f(0.5f, 0.5f);
-            Transform = temp;
         }
 
+        public Bullet (Vector2f position, float angle, Vector2f shipVelocity) : base(position, 1.0f)
+        {
+            this.Active = true;
+
+            animation = new Animation(
+                "bullet",
+                15f,
+                new List<string>
+                {
+                    "assets/textures/Animations/1.png",
+                    "assets/textures/Animations/2.png",
+                    "assets/textures/Animations/3.png",
+                    "assets/textures/Animations/4.png"
+                },
+                true
+            );
+            Init(position, angle, shipVelocity);
+        }
 
         public void Init(Vector2f position, float angle, Vector2f shipVelocity)
         {
@@ -62,6 +68,7 @@ namespace EngineGDI
 
             Transform temp = Transform;
             temp.Position = position;
+            temp.Origin = new Vector2f(0.5f, 0.5f); 
             Transform = temp;
 
             float speed = 400.0f;
@@ -78,7 +85,9 @@ namespace EngineGDI
         {
             if (!Active) return;
 
-            base.Update(deltaTime);
+            Transform t = Transform;
+            t.Position += Velocity * deltaTime;
+            Transform = t;
 
             animation.Update(deltaTime);
             string currentFrame = animation.CurrentFrame;
@@ -94,7 +103,7 @@ namespace EngineGDI
 
             if (lifeTime <= 0 || IsOffScreen())
             {
-                Deactivate();
+                Deactivate(); //Llama al garbage collector
             }
         }
 
@@ -109,7 +118,11 @@ namespace EngineGDI
         // Desactivar (pooling)
         public void Deactivate()
         {
+            if (!Active) return;
+
             Active = false;
+//Aqui llama al metodo OnBulletDeactivated de la bullet Pool
+            OnDeactivate?.Invoke(this);
         }
 
         // Check pantalla

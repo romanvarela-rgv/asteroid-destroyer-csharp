@@ -47,14 +47,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="AsteroidFactory.cs" />
     <Compile Include="Asteroid.cs" />
     <Compile Include="Bullet.cs" />
+    <Compile Include="BulletPool.cs" />
+    <Compile Include="Enemies.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Engine\Engine.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="ImageMenu.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="ObjectPool.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Text.cs" />

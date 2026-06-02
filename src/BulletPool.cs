@@ -1,38 +1,72 @@
-﻿using System;
+﻿using EngineGDI;
+using System;
+using System.Collections.Generic;
 
 public class BulletPool
 {
-    private List<Bullet> bullets = new List<Bullet>();
+    public List<Bullet> availableBullets = new List<Bullet>();
+    public List<Bullet> activeBullets = new List<Bullet>();
+
+    public List<Bullet> ActiveBullets => activeBullets;
+
+    public BulletPool(int MaxDesiredSize = 100)
+    {
+        for (int i = 0; i < MaxDesiredSize; i++)
+        {
+            Bullet newBullet = new Bullet(); //Esto afecta al script bullet y hay que cambiar cosas
+            availableBullets.Add(new Bullet());
+            
+
+        }
+    }
 
     public Bullet GetBullet(Vector2f position, float angle, Vector2f shipVelocity)
     {
-        foreach (var bullet in bullets)
+        Bullet bulletToUse; 
+
+        if (availableBullets.Count > 0)
         {
-            if (!bullet.Active)
-            {
-                bullet.Init(position, angle, shipVelocity);
-                return bullet;
-            }
+            bulletToUse = availableBullets[0];
+            availableBullets.RemoveAt(0);
+        }
+        else 
+        {
+            bulletToUse = new Bullet(); 
         }
 
-        Bullet newBullet = new Bullet(position, angle, shipVelocity);
-        bullets.Add(newBullet);
-        return newBullet;
+        bulletToUse.OnDeactivate -= OnBulletDeactivated;
+        bulletToUse.OnDeactivate += OnBulletDeactivated;
+
+        bulletToUse.Init(position, angle, shipVelocity);
+
+        activeBullets.Add(bulletToUse);
+        return bulletToUse;
+    }
+
+    private void OnBulletDeactivated(Bullet bullet)
+    {
+        if (activeBullets.Contains(bullet))
+        {
+            activeBullets.Remove(bullet);
+        }
+        if (!availableBullets.Contains(bullet))
+        {
+            availableBullets.Add(bullet);
+        }
     }
 
     public void Update(float deltaTime)
     {
-        foreach (var bullet in bullets)
+        for (int i = activeBullets.Count - 1; i >= 0; i--)
         {
-            bullet.Update(deltaTime);
+            activeBullets[i].Update(deltaTime);
         }
     }
 
     public void Draw()
     {
-        foreach (var bullet in bullets)
+        foreach (var bullet in activeBullets)
         {
-            if (bullet.Active)
                 bullet.Draw();
         }
     }
