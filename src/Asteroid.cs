@@ -4,6 +4,8 @@ namespace EngineGDI
 {
     public class Asteroid : Character
     {
+        public event Action<Asteroid> OnDestroyed;
+
         private float rotationSpeed;
         private static Random random = new Random();
 
@@ -38,6 +40,10 @@ namespace EngineGDI
         public override void Draw()
         {
             Engine.Draw(sprite, Transform);
+        }
+        public void Destroy() //Aqui sirve como evento  
+        {
+            OnDestroyed?.Invoke(this);
         }
     }
 }

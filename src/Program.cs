@@ -18,7 +18,7 @@ namespace EngineGDI
         // Entidades del Juego
         public static Player p1;
         public static List<Asteroid> asteroids = new List<Asteroid>();
-        public static BulletPool bulletPool;
+        public static PoolObject<Bullet> bulletPool;
         private static Menu mainMenu;
         //private static ImageMenu mainMenu;
 
@@ -149,27 +149,32 @@ namespace EngineGDI
         {
             p1 = new Player("assets/textures/test.png", new Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
             asteroids.Clear();
-            bulletPool = new BulletPool(100);
+            bulletPool = new PoolObject<Bullet>(100);
 
             for (int i = 0; i < 8; i++)
             {
                 Asteroid safeAsteroid = asteroidFactory.CreateSafeAsteroid(p1.Transform.Position, SCREEN_WIDTH, SCREEN_HEIGHT);
+                safeAsteroid.OnDestroyed += OnAsteroidExploded;
                 asteroids.Add(safeAsteroid);
             }
         }
-        
+
+        private static void OnAsteroidExploded(Asteroid asteroid)
+        {
+            Engine.PlaySound("assets/sounds/explosion-42132.wav");
+        }
         static void calcDeltaTime()
         {
             TimeSpan deltaSpan = DateTime.Now - lastFrameTime;
             deltaTime = (float)deltaSpan.TotalSeconds;
             lastFrameTime = DateTime.Now;
-        }   
+        }
 
         public static void UpdateGame(float deltaTime)
         {
             if (Engine.OnKeyDown(Keys.Space))
             {
-                bulletPool.GetBullet(p1.Transform.Position, p1.Transform.Angle, p1.Velocity);
+                bulletPool.GetObject().Init(p1.Transform.Position, p1.Transform.Angle, p1.Velocity);
                 Engine.PlaySound("assets/sounds/laser-zap-90575.wav");
             }
 
@@ -179,8 +184,10 @@ namespace EngineGDI
             {
                 asteroid.Update(deltaTime);
             }
-
-            bulletPool.Update(deltaTime);
+            for (int i = bulletPool.ActiveObjects.Count - 1; i >= 0; i--)
+            {
+                bulletPool.ActiveObjects[i].Update(deltaTime);
+            }
 
             CheckCollisions();
 
@@ -198,13 +205,17 @@ namespace EngineGDI
                 asteroid.Draw();
             }
 
-            bulletPool.Draw();
+            foreach (var bullet in bulletPool.ActiveObjects)
+            {
+                bullet.Draw();
+            }
+
             p1.Draw();
         }
 
         private static void CheckCollisions()
         {
-            var activeBullets = bulletPool.ActiveBullets;
+            var activeBullets = bulletPool.ActiveObjects;
 
             for (int i = asteroids.Count - 1; i >= 0; i--)
             {
@@ -219,22 +230,28 @@ namespace EngineGDI
                     {
                         asteroids.RemoveAt(i);
                         bullet.Deactivate();
-                        Engine.PlaySound("assets/sounds/explosion-42132.wav");
+                        bulletPool.RealeaseObject(bullet);
                         break;
                     }
                     if (asteroids.Count == 0 && currentState == GameState.Playing)
                     {
                         currentState = GameState.Victory;
+                        return;
                     }
                 }
 
             }
-            foreach (var asteroid in asteroids)
+            for (int i = asteroids.Count - 1; i >= 0; i--)
             {
+                var asteroid = asteroids[i];
+
                 if (Collision.CheckAABB(p1.Transform, asteroid.Transform))
                 {
+                    asteroid.Destroy(); // Explota el asteroide visualmente
+                    asteroids.RemoveAt(i);
+
+                    // Notifica al motor que perdiste para activar la máquina de estados
                     GameManager.Instance.IsGameOver = true;
-                    Engine.PlaySound("assets/sounds/explosion-42132.wav");
                     break;
                 }
             }
