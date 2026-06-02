@@ -12,55 +12,59 @@ namespace EngineGDI
         static DateTime lastFrameTime = DateTime.Now;
         public static bool showDebug = true;
 
-        public static int SCREEN_WIDTH = 1024;
+        public static int SCREEN_WIDTH  = 1024;
         public static int SCREEN_HEIGHT = 544;
 
-        // Entidades del Juego
-        public static Player p1;
-        public static List<Asteroid> asteroids = new List<Asteroid>();
+        // Entidades del juego
+        public static Player           p1;
+        public static List<Asteroid>   asteroids  = new List<Asteroid>();
         public static PoolObject<Bullet> bulletPool;
-        private static Menu mainMenu;
-        //private static ImageMenu mainMenu;
+
+        // Escenas — tipadas como IScene (interfaz)
+        private static IScene mainMenuScene;
+        private static IScene playMenuScene;
+        private static IScene winScene;
+        private static IScene loseScene;
 
         private static AsteroidFactory asteroidFactory = new AsteroidFactory();
-
 
         [STAThread]
         static void Main()
         {
-            // 1. Inicialización del Motor
             Engine.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Asteroids GDI+");
 
-            // 2. Inicialización de Componentes
             InitializeMenu();
             InitializeGame();
 
-            // 3. Bucle Principal
             while (Engine.IsWindowOpen)
             {
                 Engine.UpdateWindow();
-                calcDeltaTime();
+                CalcDeltaTime();
                 Update();
                 Draw();
-
                 Engine.Render();
             }
         }
 
+      
+        //  Maquina de estados — Update
+      
         private static void Update()
         {
-
             switch (currentState)
             {
                 case GameState.Menu:
-                    mainMenu.Update(deltaTime);
+                    mainMenuScene.Update(deltaTime);
+                    break;
+
+                case GameState.PlayMenu:
+                    playMenuScene.Update(deltaTime);
                     break;
 
                 case GameState.Playing:
                     if (Engine.OnKeyDown(Keys.P))
-                    {
                         currentState = GameState.Paused;
-                    }
+
                     UpdateGame(deltaTime);
 
                     if (GameManager.Instance.IsGameOver)
@@ -69,54 +73,99 @@ namespace EngineGDI
                     if (asteroids.Count == 0)
                         currentState = GameState.Victory;
                     break;
+
                 case GameState.Paused:
                     if (Engine.OnKeyDown(Keys.P))
-                    {
                         currentState = GameState.Playing;
-                    }
+                    break;
+
+                case GameState.Victory:
+                    winScene.Update(deltaTime);
                     break;
 
                 case GameState.GameOver:
-                case GameState.Victory:
-                    if (Engine.OnKeyDown(Keys.R))
-                    {
-                        GameManager.Instance.IsGameOver = false;
-                        RestartGame();
-
-                    }
+                    loseScene.Update(deltaTime);
                     break;
             }
-
         }
 
+       
+        //  Maquina de estados — Draw
+       
         private static void Draw()
         {
             switch (currentState)
             {
                 case GameState.Menu:
-                    mainMenu.Draw();
+                    mainMenuScene.Draw();
+                    break;
+
+                case GameState.PlayMenu:
+                    playMenuScene.Draw();
                     break;
 
                 case GameState.Playing:
                     DrawGame();
                     break;
+
                 case GameState.Paused:
                     DrawGame();
                     Engine.DebugLog("--- PAUSED ---");
                     Engine.DebugLog("Press P to Resume");
                     break;
-                case GameState.GameOver:
-                    DrawGame();
-                    Engine.DebugLog("--- GAME OVER ---");
-                    Engine.DebugLog("Press R to Try Again");
-                    break;
+
                 case GameState.Victory:
-                    DrawGame();
-                    Engine.DebugLog("--- VICTORY! ---");
-                    Engine.DebugLog("Press R to Play Again");
+                    winScene.Draw();
+                    break;
+
+                case GameState.GameOver:
+                    loseScene.Draw();
                     break;
             }
+        }
 
+       
+        //  Inicializacion
+       
+
+        // Crea las escenas y sus dependencias (lo que necesita para la transicion)
+        public static void InitializeMenu()
+        {
+            mainMenuScene = new MainMenuScene(
+                onPlay:    () => currentState = GameState.PlayMenu,
+                onOptions: () => { },
+                onQuit:    () => Application.Exit()
+            );
+
+            playMenuScene = new PlayMenuScene(
+                onNewGame:  () => { InitializeGame(); currentState = GameState.Playing; },
+                onLoadGame: () => { InitializeGame(); currentState = GameState.Playing; },
+                onBack:     () => currentState = GameState.Menu
+            );
+
+            winScene = new WinScene(
+                onContinue: () => RestartGame(),
+                onBack:     () => currentState = GameState.Menu
+            );
+
+            loseScene = new LoseScene(
+                onRetry: () => RestartGame(),
+                onBack:  () => currentState = GameState.Menu
+            );
+        }
+
+        public static void InitializeGame()
+        {
+            p1         = new Player("assets/textures/test.png", new Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
+            asteroids.Clear();
+            bulletPool = new PoolObject<Bullet>(100);
+
+            for (int i = 0; i < 8; i++)
+            {
+                Asteroid a = asteroidFactory.CreateSafeAsteroid(p1.Transform.Position, SCREEN_WIDTH, SCREEN_HEIGHT);
+                a.OnDestroyed += OnAsteroidExploded;
+                asteroids.Add(a);
+            }
         }
 
         private static void RestartGame()
@@ -126,51 +175,10 @@ namespace EngineGDI
             currentState = GameState.Playing;
         }
 
-        public static void InitializeMenu()
-        {
-            List<string> menuOptions = new List<string> { "INICIAR JUEGO", "SALIR" };
-            mainMenu = new Menu(menuOptions, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20);
-
-            mainMenu.OnOptionSelected += (index) =>
-            {
-                if (index == 0)
-                {
-                    InitializeGame();
-                    currentState = GameState.Playing;
-                }
-                else if (index == 1)
-                {
-                    Application.Exit();
-                }
-            };
-        }
-
-        public static void InitializeGame()
-        {
-            p1 = new Player("assets/textures/test.png", new Vector2f(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
-            asteroids.Clear();
-            bulletPool = new PoolObject<Bullet>(100);
-
-            for (int i = 0; i < 8; i++)
-            {
-                Asteroid safeAsteroid = asteroidFactory.CreateSafeAsteroid(p1.Transform.Position, SCREEN_WIDTH, SCREEN_HEIGHT);
-                safeAsteroid.OnDestroyed += OnAsteroidExploded;
-                asteroids.Add(safeAsteroid);
-            }
-        }
-
-        private static void OnAsteroidExploded(Asteroid asteroid)
-        {
-            Engine.PlaySound("assets/sounds/explosion-42132.wav");
-        }
-        static void calcDeltaTime()
-        {
-            TimeSpan deltaSpan = DateTime.Now - lastFrameTime;
-            deltaTime = (float)deltaSpan.TotalSeconds;
-            lastFrameTime = DateTime.Now;
-        }
-
-        public static void UpdateGame(float deltaTime)
+        
+        //  Logica de juego
+        
+        public static void UpdateGame(float dt)
         {
             if (Engine.OnKeyDown(Keys.Space))
             {
@@ -178,16 +186,13 @@ namespace EngineGDI
                 Engine.PlaySound("assets/sounds/laser-zap-90575.wav");
             }
 
-            p1.Update(deltaTime);
+            p1.Update(dt);
 
             foreach (var asteroid in asteroids)
-            {
-                asteroid.Update(deltaTime);
-            }
+                asteroid.Update(dt);
+
             for (int i = bulletPool.ActiveObjects.Count - 1; i >= 0; i--)
-            {
-                bulletPool.ActiveObjects[i].Update(deltaTime);
-            }
+                bulletPool.ActiveObjects[i].Update(dt);
 
             CheckCollisions();
 
@@ -201,14 +206,10 @@ namespace EngineGDI
         public static void DrawGame()
         {
             foreach (var asteroid in asteroids)
-            {
                 asteroid.Draw();
-            }
 
             foreach (var bullet in bulletPool.ActiveObjects)
-            {
                 bullet.Draw();
-            }
 
             p1.Draw();
         }
@@ -225,37 +226,47 @@ namespace EngineGDI
                 {
                     var bullet = activeBullets[j];
 
-                    // Ahora el tamaño se extrae automáticamente del Transform
                     if (Collision.CheckAABB(asteroid.Transform, bullet.Transform))
                     {
+                        asteroid.Destroy();
                         asteroids.RemoveAt(i);
                         bullet.Deactivate();
                         bulletPool.RealeaseObject(bullet);
+
+                        GameManager.Instance.Score++;
+
+                        if (asteroids.Count == 0 && currentState == GameState.Playing)
+                        {
+                            currentState = GameState.Victory;
+                            return;
+                        }
                         break;
                     }
-                    if (asteroids.Count == 0 && currentState == GameState.Playing)
-                    {
-                        currentState = GameState.Victory;
-                        return;
-                    }
                 }
-
             }
+
             for (int i = asteroids.Count - 1; i >= 0; i--)
             {
-                var asteroid = asteroids[i];
-
-                if (Collision.CheckAABB(p1.Transform, asteroid.Transform))
+                if (Collision.CheckAABB(p1.Transform, asteroids[i].Transform))
                 {
-                    asteroid.Destroy(); // Explota el asteroide visualmente
+                    asteroids[i].Destroy();
                     asteroids.RemoveAt(i);
-
-                    // Notifica al motor que perdiste para activar la máquina de estados
                     GameManager.Instance.IsGameOver = true;
                     break;
                 }
             }
         }
 
+        private static void OnAsteroidExploded(Asteroid asteroid)
+        {
+            Engine.PlaySound("assets/sounds/explosion-42132.wav");
+        }
+
+        static void CalcDeltaTime()
+        {
+            TimeSpan span = DateTime.Now - lastFrameTime;
+            deltaTime    = (float)span.TotalSeconds;
+            lastFrameTime = DateTime.Now;
+        }
     }
 }
