@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace EngineGDI
 {
-    public class PoolObject<T> where T : class, new()
+    public class PoolObject<T> where T : class, IPoolable, new()
     {
         //// La restricción 'where T : class, new()' obliga a que sea una clase y tenga constructor vacío
         private List<T> availableObjects = new List<T>();
@@ -45,6 +45,7 @@ namespace EngineGDI
             }
             if (!availableObjects.Contains(obj))
             {
+                obj.ResetObject();
                 availableObjects.Add(obj);
             }
           

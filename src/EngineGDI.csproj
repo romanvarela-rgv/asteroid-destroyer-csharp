@@ -63,6 +63,7 @@
     <Compile Include="LoseScene.cs" />
     <Compile Include="MainMenuScene.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="IPoolable.cs" />
     <Compile Include="ObjectPool.cs" />
     <Compile Include="PlayMenuScene.cs" />
     <Compile Include="Player.cs" />

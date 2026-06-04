@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EngineGDI
 {
-    public class Bullet : Character
+    public class Bullet : Character, IPoolable
     {
         public Action<Bullet> OnDeactivate; //Aqui activamosn la logica de las balas
                                            
@@ -18,6 +18,13 @@ namespace EngineGDI
         }
 
         public bool Active { get; private set; }
+
+        //Cosas para la 3ra interface
+        public void ResetObject()
+        {
+            this.Active = false;
+            this.LifeTime = 2.0f;
+        }
 
         //  Constructor
         public Bullet() : base(new Vector2f(0,0), 1.0f)
