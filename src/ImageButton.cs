@@ -41,16 +41,21 @@ namespace EngineGDI
         public void Draw()
         {
             Engine.Draw(spritePath, transform);
-
+            
             if (isSelected)
             {
+                // Calculamos el tamaño REAL en píxeles de pantalla multiplicando tamaño base por escala
+                float realWidth = transform.Size.X * transform.Scale.X;
+                float realHeight = transform.Size.Y * transform.Scale.Y;
+
+                // Dibujamos el rectángulo de selección usando las medidas reales modificadas
                 Engine.DrawRectangle(
                     transform.Position,
-                    transform.Size.X + 10,
-                    transform.Size.Y + 10,
+                    realWidth + 10,   // Le sumamos el pequeño margen de gracia de 10px que pusiste
+                    realHeight + 10,
                     Color.Cyan,
-                    false,      // outline, no relleno
-                    0.5f, 0.5f
+                    false,            // Outline, sin relleno
+                    0.5f, 0.5f        // Mismo pivote centrado para que encaje perfecto
                 );
             }
         }

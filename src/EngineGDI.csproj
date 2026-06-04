@@ -60,7 +60,6 @@
     <Compile Include="IButton.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="ImageButton.cs" />
-    <Compile Include="ImageMenu.cs" />
     <Compile Include="LoseScene.cs" />
     <Compile Include="MainMenuScene.cs" />
     <Compile Include="Menu.cs" />
