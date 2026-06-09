@@ -5,7 +5,7 @@ namespace EngineGDI
 {
     public class Bullet : Character, IPoolable
     {
-        public Action<Bullet> OnDeactivate; //Aqui activamosn la logica de las balas
+        public Action<Bullet> OnDeactivate; // logica de las balas
                                            
         private float lifeTime = 2.0f;
         private Animation animation;
@@ -19,7 +19,7 @@ namespace EngineGDI
 
         public bool Active { get; private set; }
 
-        //Cosas para la 3ra interface
+        // Cosas para la 3ra interface
         public void ResetObject()
         {
             this.Active = false;
@@ -128,7 +128,9 @@ namespace EngineGDI
             if (!Active) return;
 
             Active = false;
-//Aqui llama al metodo OnBulletDeactivated de la bullet Pool
+
+          //Aqui llama al metodo OnBulletDeactivated de la bullet Pool
+
             OnDeactivate?.Invoke(this);
         }
 

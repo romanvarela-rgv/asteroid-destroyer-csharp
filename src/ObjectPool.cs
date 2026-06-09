@@ -17,7 +17,7 @@ namespace EngineGDI
         {
             for (int i = 0; i < initiaSize; i++)
             {
-                availableObjects.Add(new T()); //Instancia el tipo generico
+                availableObjects.Add(new T()); // tipo generico
             }
         }
 

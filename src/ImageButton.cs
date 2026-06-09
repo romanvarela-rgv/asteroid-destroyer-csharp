@@ -44,18 +44,18 @@ namespace EngineGDI
             
             if (isSelected)
             {
-                // Calculamos el tamaño REAL en píxeles de pantalla multiplicando tamaño base por escala
+                //  tamaño REAL en píxeles de pantalla 
                 float realWidth = transform.Size.X * transform.Scale.X;
                 float realHeight = transform.Size.Y * transform.Scale.Y;
 
-                // Dibujamos el rectángulo de selección usando las medidas reales modificadas
+                // rectángulo de selección (usando las medidas reales)
                 Engine.DrawRectangle(
                     transform.Position,
-                    realWidth + 10,   // Le sumamos el pequeño margen de gracia de 10px que pusiste
+                    realWidth + 10,   
                     realHeight + 10,
                     Color.Cyan,
-                    false,            // Outline, sin relleno
-                    0.5f, 0.5f        // Mismo pivote centrado para que encaje perfecto
+                    false,            // Outline
+                    0.5f, 0.5f        // centrado 
                 );
             }
         }

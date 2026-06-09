@@ -7,6 +7,6 @@ namespace EngineGDI
     public interface IPoolable
     {
         bool Active { get; }
-        void ResetObject(); //Reinicia el estado del objeto para que pueda ser reutilizado
+        void ResetObject(); //Reinicia el estado del objeto 
     }
 }

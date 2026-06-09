@@ -13,7 +13,7 @@ public class BulletPool
     {
         for (int i = 0; i < MaxDesiredSize; i++)
         {
-            Bullet newBullet = new Bullet(); //Esto afecta al script bullet y hay que cambiar cosas
+            Bullet newBullet = new Bullet(); // Esto afecta al script bullet y hay que cambiar cosas
             availableBullets.Add(new Bullet());
             
 

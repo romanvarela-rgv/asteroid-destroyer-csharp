@@ -20,7 +20,7 @@ namespace EngineGDI
         public static List<Asteroid>   asteroids  = new List<Asteroid>();
         public static PoolObject<Bullet> bulletPool;
 
-        // Escenas — tipadas como IScene (interfaz)
+        // Escenas (interfaz)
         private static IScene mainMenuScene;
         private static IScene playMenuScene;
         private static IScene winScene;
@@ -124,11 +124,7 @@ namespace EngineGDI
             }
         }
 
-       
-        //  Inicializacion
-       
-
-        // Crea las escenas y sus dependencias (lo que necesita para la transicion)
+        // Crea las escenas
         public static void InitializeMenu()
         {
             mainMenuScene = new MainMenuScene(

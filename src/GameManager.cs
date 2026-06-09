@@ -34,7 +34,8 @@ namespace EngineGDI
 
         public void Update()
         {
-            //Aqui se manejan los cambios de estado (Menu, juego, Derrota )
+            // Cambios de estado (Menu, juego, Derrota )
+
             if (isGameOver)
             {
                 Console.WriteLine("Game Over! Final Score: " + score);

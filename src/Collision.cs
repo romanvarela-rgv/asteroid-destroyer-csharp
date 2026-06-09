@@ -4,10 +4,10 @@ namespace EngineGDI
 {
     public static class Collision
     {
-        /// <summary>
-        /// Comprueba una colisión AABB (Axis-Aligned Bounding Box) entre dos transforms.
-        /// Utiliza automáticamente el campo Size del transform.
-        /// </summary>
+       
+        // Comprueba una colisión AABB entre dos transforms.
+        // Utiliza automáticamente el campo Size del transform.
+        
         public static bool CheckAABB(Transform t1, Transform t2)
         {
             // Calculamos las dimensiones reales aplicando la escala
@@ -34,10 +34,10 @@ namespace EngineGDI
                    top1 < bottom2;
         }
 
-        /// <summary>
-        /// Comprueba una colisión circular (por distancia) entre dos transforms.
-        /// Utiliza el tamaño (X o Y) para calcular un radio aproximado si no se especifica.
-        /// </summary>
+        
+        // Comprueba una colisión circular entre dos transforms.
+        // Utiliza el tamaño (X o Y) para calcular un radio aproximado si no se especifica.
+        
         public static bool CheckCircle(Transform t1, Transform t2)
         {
             float r1 = (t1.Size.X / 2f) * t1.Scale.X;
