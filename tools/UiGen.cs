@@ -119,6 +119,27 @@ public static class UiGen
             bmp.Save(outPath, ImageFormat.Png);
     }
 
+    // ---- Sprites agrandados ----
+
+    // Agranda un sprite de pixel art sin suavizar (cada pixel pasa a ser un cuadrado de factor x factor).
+    // EngineGDI suaviza al escalar, asi que un frame de 16px agrandado en el juego se veria borroso.
+    public static void Upscale(string sourcePath, int factor, string outPath)
+    {
+        using (var src = new Bitmap(sourcePath))
+        using (var big = new Bitmap(src.Width * factor, src.Height * factor, PixelFormat.Format32bppArgb))
+        {
+            for (int y = 0; y < src.Height; y++)
+                for (int x = 0; x < src.Width; x++)
+                {
+                    Color c = src.GetPixel(x, y);
+                    for (int py = 0; py < factor; py++)
+                        for (int px = 0; px < factor; px++)
+                            big.SetPixel(x * factor + px, y * factor + py, c);
+                }
+            big.Save(outPath, ImageFormat.Png);
+        }
+    }
+
     // ---- Fondo in-game ----
 
     static double Smooth(double[,] grid, double fx, double fy)

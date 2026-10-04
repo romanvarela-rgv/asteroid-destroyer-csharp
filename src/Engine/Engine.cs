@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,7 +13,6 @@ namespace EngineGDI
         private static Form1 window;
         private static List<DrawCommand> drawQueue = new List<DrawCommand>();
         private static Dictionary<string, Image> textures = new Dictionary<string, Image>();
-        private static Dictionary<string, Image> scaledTextures = new Dictionary<string, Image>();
         private static Dictionary<string, PrivateFontCollection> fontCollections = new Dictionary<string, PrivateFontCollection>();
         private static Dictionary<string, FontFamily> fontFamilies = new Dictionary<string, FontFamily>();
         
@@ -29,9 +27,6 @@ namespace EngineGDI
 
         public static bool IsWindowOpen = false;
         public static Color ClearColor = Color.Black;
-
-        // Desplazamiento que se suma a todas las texturas (screen shake). El texto no se ve afectado.
-        public static Vector2f CameraOffset = new Vector2f(0, 0);
 
         [DllImport("winmm.dll")]
         static extern Int32 mciSendString(string command, string buffer, int bufferSize, IntPtr hwndCallback);
@@ -70,13 +65,8 @@ namespace EngineGDI
                 Application.DoEvents();
         }
 
-        // Se apaga desde el menu de opciones
-        public static bool SoundEnabled = true;
-
         public static void PlaySound(string path)
         {
-            if (!SoundEnabled) return;
-
             string alias = "s" + path.GetHashCode();
             mciSendString($"open \"{path}\" alias {alias}", null, 0, IntPtr.Zero);
             
@@ -104,33 +94,14 @@ namespace EngineGDI
             {
                 Type = CommandType.Texture,
                 TexturePath = path,
-                X = x + CameraOffset.X,
-                Y = y + CameraOffset.Y,
+                X = x,
+                Y = y,
                 ScaleX = scaleX,
                 ScaleY = scaleY,
                 Angle = angle,
                 OffsetX = offsetX,
                 OffsetY = offsetY
             });
-        }
-
-        // Copia achicada (con buen suavizado) de una textura, calculada la primera vez que se pide ese tamaño
-        private static Image GetScaledTexture(string path, Image source, int width, int height)
-        {
-            string key = path + "|" + width + "x" + height;
-            Image scaled;
-            if (scaledTextures.TryGetValue(key, out scaled))
-                return scaled;
-
-            var bmp = new Bitmap(Math.Max(width, 1), Math.Max(height, 1));
-            using (var g = Graphics.FromImage(bmp))
-            {
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.DrawImage(source, 0, 0, bmp.Width, bmp.Height);
-            }
-            scaledTextures[key] = bmp;
-            return bmp;
         }
 
         public static void Draw(string path, Transform transform)
@@ -308,29 +279,6 @@ namespace EngineGDI
                             var img = textures[cmd.TexturePath];
                             float width = img.Width * cmd.ScaleX;
                             float height = img.Height * cmd.ScaleY;
-
-                            // Pixel art: al agrandar se usa vecino mas cercano para que quede nitido.
-                            // Al achicar (fondos de 1920px, botones de 512px) se suaviza para que no quede dentado.
-                            if (cmd.ScaleX >= 1f)
-                            {
-                                e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-                                e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
-                            }
-                            else if (cmd.Angle == 0f)
-                            {
-                                // Lo que no rota se achica una sola vez y se guarda; despues solo se copia
-                                img = GetScaledTexture(cmd.TexturePath, img, (int)Math.Round(width), (int)Math.Round(height));
-                                width = img.Width;
-                                height = img.Height;
-                                e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-                                e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
-                            }
-                            else
-                            {
-                                e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                                e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                            }
-
                             e.Graphics.TranslateTransform(cmd.X, cmd.Y);
                             e.Graphics.RotateTransform(cmd.Angle);
                             e.Graphics.DrawImage(

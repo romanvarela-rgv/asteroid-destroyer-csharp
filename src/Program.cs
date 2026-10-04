@@ -67,7 +67,6 @@ namespace EngineGDI
 
             // Record, opciones y partida guardada desde %AppData%\AsteroidDestroyer\save.txt
             GameManager.Instance.UseSaveStore(new FileSaveStore());
-            Engine.SoundEnabled = GameManager.Instance.SoundEnabled;
 
             // La partida se crea recien al elegir New Game / Load Game
             // (crearla aca guardaria un checkpoint encima de la partida guardada)
@@ -195,7 +194,7 @@ namespace EngineGDI
 
             optionsScene = new OptionsScene(
                 isSoundEnabled: () => gm.SoundEnabled,
-                onToggleSound:  () => { gm.ToggleSound(); Engine.SoundEnabled = gm.SoundEnabled; },
+                onToggleSound:  () => gm.ToggleSound(),
                 onBack:         () => currentState = GameState.Menu
             );
 
@@ -334,7 +333,7 @@ namespace EngineGDI
                 if (Engine.OnKeyDown(Keys.Space))
                 {
                     bulletPool.GetObject().Init(p1.Transform.Position, p1.Transform.Angle, p1.Velocity);
-                    Engine.PlaySound("assets/sounds/laser-zap-90575.wav");
+                    PlaySound("assets/sounds/laser-zap-90575.wav");
                 }
 
                 p1.Update(dt);
@@ -386,7 +385,7 @@ namespace EngineGDI
             // El fondo queda quieto; el shake mueve solo lo que esta en el espacio
             Engine.Draw(GAME_BG_PATH, gameBackgroundTransform);
 
-            Engine.CameraOffset = screenShake.Offset;
+            Camera.Offset = screenShake.Offset;
 
             foreach (var asteroid in asteroids)
                 asteroid.Draw();
@@ -400,7 +399,7 @@ namespace EngineGDI
             foreach (var explosion in explosions)
                 explosion.Draw();
 
-            Engine.CameraOffset = new Vector2f(0, 0);
+            Camera.Offset = new Vector2f(0, 0);
 
             DrawHud();
         }
@@ -500,7 +499,7 @@ namespace EngineGDI
 
         private static void OnAsteroidExploded(Asteroid asteroid)
         {
-            Engine.PlaySound("assets/sounds/explosion-42132.wav");
+            PlaySound("assets/sounds/explosion-42132.wav");
 
             // Explosion y sacudon proporcionales al tamaño del asteroide
             float diameter = Asteroid.GetDiameter(asteroid.Size);
@@ -510,6 +509,13 @@ namespace EngineGDI
             // Se parte en dos asteroides mas chicos
             foreach (var fragment in asteroidFactory.CreateFragments(asteroid))
                 AddAsteroid(fragment);
+        }
+
+        // Respeta la opcion de sonido del menu de opciones
+        private static void PlaySound(string path)
+        {
+            if (GameManager.Instance.SoundEnabled)
+                Engine.PlaySound(path);
         }
 
         static void CalcDeltaTime()

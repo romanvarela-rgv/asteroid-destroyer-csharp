@@ -102,7 +102,7 @@ namespace EngineGDI
 
             Transform drawTransform = Transform;
             drawTransform.Angle += SPRITE_ANGLE_OFFSET;
-            Engine.Draw(sprite, drawTransform);
+            Camera.Draw(sprite, drawTransform);
         }
     }
 }

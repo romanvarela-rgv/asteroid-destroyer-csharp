@@ -54,6 +54,7 @@
     <Compile Include="Bullet.cs" />
     <Compile Include="BulletPool.cs" />
     <Compile Include="ButtonGroup.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="Enemies.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Collision.cs" />
@@ -346,6 +347,10 @@
     </Content>
     <Content Include="..\assets\EngineGDI\textures\Scenes\GameBackground.png">
       <Link>assets\textures\Scenes\GameBackground.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Explosion\*.png">
+      <Link>assets\textures\Explosion\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

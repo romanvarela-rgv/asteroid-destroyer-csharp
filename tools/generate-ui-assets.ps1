@@ -54,4 +54,12 @@ foreach ($file in $titles.Keys) {
 }
 
 [UiGen]::Selector(5, (Join-Path $textures 'UI\Selector.png'));                            Write-Host 'UI\Selector.png'
+
+# Frames de la explosion (los de 16px de Animations) agrandados x8 sin suavizar
+New-Item -ItemType Directory -Force (Join-Path $textures 'Explosion') | Out-Null
+foreach ($i in 1..8) {
+    [UiGen]::Upscale((Join-Path $textures "Animations\$i.png"), 8, (Join-Path $textures "Explosion\$i.png"))
+    Write-Host "Explosion\$i.png"
+}
+
 [UiGen]::Background(1024, 544, 4, 7, (Join-Path $textures 'Scenes\GameBackground.png'));  Write-Host 'Scenes\GameBackground.png'

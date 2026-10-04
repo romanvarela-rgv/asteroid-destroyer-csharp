@@ -13,7 +13,7 @@ namespace EngineGDI
 
         public bool IsFinished => animation.IsFinished;
 
-        // size: tamaño final aproximado en pixeles (los frames son de 16x16)
+        // size: tamaño final aproximado en pixeles (los frames son de 128x128, ver tools/generate-ui-assets.ps1)
         public Explosion(Vector2f position, Vector2f velocity, float size) : base(position)
         {
             animation = new Animation(
@@ -21,14 +21,14 @@ namespace EngineGDI
                 18f,
                 new List<string>
                 {
-                    "assets/textures/Animations/1.png",
-                    "assets/textures/Animations/2.png",
-                    "assets/textures/Animations/3.png",
-                    "assets/textures/Animations/4.png",
-                    "assets/textures/Animations/5.png",
-                    "assets/textures/Animations/6.png",
-                    "assets/textures/Animations/7.png",
-                    "assets/textures/Animations/8.png"
+                    "assets/textures/Explosion/1.png",
+                    "assets/textures/Explosion/2.png",
+                    "assets/textures/Explosion/3.png",
+                    "assets/textures/Explosion/4.png",
+                    "assets/textures/Explosion/5.png",
+                    "assets/textures/Explosion/6.png",
+                    "assets/textures/Explosion/7.png",
+                    "assets/textures/Explosion/8.png"
                 },
                 false
             );
@@ -74,7 +74,7 @@ namespace EngineGDI
 
         public override void Draw()
         {
-            Engine.Draw(sprite, Transform);
+            Camera.Draw(sprite, Transform);
         }
     }
 }

@@ -63,7 +63,7 @@ namespace EngineGDI
 
         public override void Draw()
         {
-            Engine.Draw(sprite, Transform);
+            Camera.Draw(sprite, Transform);
         }
 
         public void Destroy() //Aqui sirve como evento
