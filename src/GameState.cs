@@ -4,6 +4,7 @@ namespace EngineGDI
     {
         Menu,
         PlayMenu,
+        Options,
         Playing,
         Paused,
         Victory,

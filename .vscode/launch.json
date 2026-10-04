@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // F5: compila y abre el juego con el depurador de .NET Framework
+            "name": "Asteroid Destroyer",
+            "type": "clr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}\\src\\bin\\Debug\\EngineGDI.exe",
+            // El juego busca la carpeta assets/ al lado del .exe
+            "cwd": "${workspaceFolder}\\src\\bin\\Debug",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        }
+    ]
+}

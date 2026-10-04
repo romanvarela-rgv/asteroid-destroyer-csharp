@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // Compila la solucion con el MSBuild de Visual Studio (.NET Framework 4.8)
+            "label": "build",
+            "type": "process",
+            "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "args": [
+                "${workspaceFolder}\\EngineGDI.sln",
+                "-t:Build",
+                "-p:Configuration=Debug",
+                "-v:minimal",
+                "-nologo",
+                "-property:GenerateFullPaths=true"
+            ],
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
