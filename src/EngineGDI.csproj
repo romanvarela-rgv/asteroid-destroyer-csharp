@@ -16,7 +16,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <!-- portable: lo necesita el depurador de VS Code (Visual Studio tambien lo lee) -->
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -49,25 +50,38 @@
     <Compile Include="Animation.cs" />
     <Compile Include="AsteroidFactory.cs" />
     <Compile Include="Asteroid.cs" />
+    <Compile Include="AsteroidSize.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="BulletPool.cs" />
+    <Compile Include="ButtonGroup.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="Enemies.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Engine\Engine.cs" />
+    <Compile Include="Explosion.cs" />
+    <Compile Include="FileSaveStore.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="IButton.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="ImageButton.cs" />
     <Compile Include="ImageMenu.cs" />
+    <Compile Include="ISaveStore.cs" />
     <Compile Include="LoseScene.cs" />
     <Compile Include="MainMenuScene.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="ObjectPool.cs" />
+    <Compile Include="OptionsScene.cs" />
+    <Compile Include="PauseScene.cs" />
+    <Compile Include="PixelFont.cs" />
+    <Compile Include="PixelPanel.cs" />
+    <Compile Include="PixelText.cs" />
     <Compile Include="PlayMenuScene.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="SaveData.cs" />
+    <Compile Include="ScreenShake.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="Vector2f.cs" />
@@ -280,6 +294,63 @@
     </Content>
     <Content Include="..\assets\EngineGDI\textures\Buttons\Continue.png">
       <Link>assets\textures\Buttons\Continue.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <!-- UI generada con tools/generate-ui-assets.ps1 -->
+    <Content Include="..\assets\EngineGDI\textures\Buttons\ResumeButton.png">
+      <Link>assets\textures\Buttons\ResumeButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\RestartButton.png">
+      <Link>assets\textures\Buttons\RestartButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\MenuButton.png">
+      <Link>assets\textures\Buttons\MenuButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\SoundOnButton.png">
+      <Link>assets\textures\Buttons\SoundOnButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Buttons\SoundOffButton.png">
+      <Link>assets\textures\Buttons\SoundOffButton.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\UI\PausedTitle.png">
+      <Link>assets\textures\UI\PausedTitle.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\UI\OptionsTitle.png">
+      <Link>assets\textures\UI\OptionsTitle.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\UI\Wave1Title.png">
+      <Link>assets\textures\UI\Wave1Title.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\UI\Wave2Title.png">
+      <Link>assets\textures\UI\Wave2Title.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\UI\Wave3Title.png">
+      <Link>assets\textures\UI\Wave3Title.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\UI\NewRecordTitle.png">
+      <Link>assets\textures\UI\NewRecordTitle.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\UI\Selector.png">
+      <Link>assets\textures\UI\Selector.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Scenes\GameBackground.png">
+      <Link>assets\textures\Scenes\GameBackground.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\assets\EngineGDI\textures\Explosion\*.png">
+      <Link>assets\textures\Explosion\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

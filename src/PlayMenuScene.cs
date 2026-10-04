@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace EngineGDI
 {
@@ -10,8 +8,7 @@ namespace EngineGDI
 
 
         private Transform backgroundTransform;
-        private List<IButton> buttons = new List<IButton>();
-        private int selectedIndex = 0;
+        private ButtonGroup buttons = new ButtonGroup();
 
         public PlayMenuScene(Action onNewGame, Action onLoadGame, Action onBack)
         {
@@ -35,36 +32,18 @@ namespace EngineGDI
             buttons.Add(btnNew);
             buttons.Add(btnLoad);
             buttons.Add(btnBack);
-
-            buttons[selectedIndex].IsSelected = true;
         }
 
         // Seleccion y update de los botones
         public void Update(float deltaTime)
         {
-            if (Engine.OnKeyDown(Keys.Up) || Engine.OnKeyDown(Keys.W))
-            {
-                buttons[selectedIndex].IsSelected = false;
-                selectedIndex = (selectedIndex - 1 + buttons.Count) % buttons.Count;
-                buttons[selectedIndex].IsSelected = true;
-            }
-            if (Engine.OnKeyDown(Keys.Down) || Engine.OnKeyDown(Keys.S))
-            {
-                buttons[selectedIndex].IsSelected = false;
-                selectedIndex = (selectedIndex + 1) % buttons.Count;
-                buttons[selectedIndex].IsSelected = true;
-            }
-            if (Engine.OnKeyDown(Keys.Enter) || Engine.OnKeyDown(Keys.Space))
-            {
-                buttons[selectedIndex].Press();
-            }
+            buttons.Update();
         }
 
         public void Draw()
         {
             Engine.Draw(BG_PATH, backgroundTransform);
-            foreach (var btn in buttons)
-                btn.Draw();
+            buttons.Draw();
         }
     }
 }

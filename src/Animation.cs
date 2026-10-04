@@ -14,6 +14,12 @@ namespace EngineGDI
 
         public string CurrentFrame => frames.Count > 0 ? frames[currentFrame] : "";
 
+        // Solo para animaciones sin loop: true cuando ya paso el ultimo frame
+        public bool IsFinished { get; private set; }
+
+        // Duracion total en segundos (speed = frames por segundo)
+        public float Duration => speed > 0 ? frames.Count / speed : 0;
+
         public Animation(string name, float speed, List<string> frames = null, bool isLoop = true)
         {
             this.name = name;
@@ -44,7 +50,10 @@ namespace EngineGDI
                     if (isLoop)
                         currentFrame = 0;
                     else
+                    {
                         currentFrame = frames.Count - 1;
+                        IsFinished = true;
+                    }
                 }
             }
         }
@@ -53,6 +62,7 @@ namespace EngineGDI
         {
             currentFrame = 0;
             currentTime = 0;
+            IsFinished = false;
         }
     }
 }

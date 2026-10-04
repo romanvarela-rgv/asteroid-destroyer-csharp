@@ -112,7 +112,7 @@ namespace EngineGDI
         {
             if (!Active) return;
 
-            Engine.Draw(sprite, Transform);
+            Camera.Draw(sprite, Transform);
         }
 
         // Desactivar (pooling)
