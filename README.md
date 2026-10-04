@@ -27,8 +27,6 @@ Arcade de naves y asteroides en C# con WinForms y GDI+, sobre un motor 2D propio
 - **Load Game** retoma desde el inicio de la última oleada que empezaste.
 - En **Options** se prende o apaga el sonido.
 
-En [`REPORTE_SESION.md`](REPORTE_SESION.md) explico paso a paso cómo pasé el sistema de menús a interfaces e inyección de dependencias.
-
 ## Controles
 
 | Tecla | Acción |
