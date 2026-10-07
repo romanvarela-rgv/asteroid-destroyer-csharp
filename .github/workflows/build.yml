@@ -1,0 +1,43 @@
+# Compila el juego en cada push y, al subir un tag v*, publica una release con el zip listo para jugar
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: microsoft/setup-msbuild@v3
+
+      - name: Compilar (Release)
+        run: msbuild EngineGDI.sln -p:Configuration=Release -v:minimal -nologo
+
+      - name: Armar el zip
+        shell: pwsh
+        run: |
+          $out = "src/bin/Release"
+          New-Item -ItemType Directory -Force dist/AsteroidDestroyer | Out-Null
+          Copy-Item "$out/EngineGDI.exe", "$out/EngineGDI.exe.config" dist/AsteroidDestroyer
+          Copy-Item "$out/assets" dist/AsteroidDestroyer -Recurse
+          Compress-Archive dist/AsteroidDestroyer dist/AsteroidDestroyer-win.zip
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: AsteroidDestroyer-win
+          path: dist/AsteroidDestroyer
+
+      - name: Publicar release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" dist/AsteroidDestroyer-win.zip --title "Asteroid Destroyer ${{ github.ref_name }}" --generate-notes

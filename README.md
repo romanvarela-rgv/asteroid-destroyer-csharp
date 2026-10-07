@@ -1,5 +1,8 @@
 # Asteroid Destroyer
 
+[![Build](https://github.com/romanvarela-rgv/asteroid-destroyer-csharp/actions/workflows/build.yml/badge.svg)](https://github.com/romanvarela-rgv/asteroid-destroyer-csharp/actions/workflows/build.yml)
+[![Descargar](https://img.shields.io/github/v/release/romanvarela-rgv/asteroid-destroyer-csharp?label=descargar&logo=windows)](https://github.com/romanvarela-rgv/asteroid-destroyer-csharp/releases/latest)
+
 Arcade de naves y asteroides en C# con WinForms y GDI+, sobre un motor 2D propio (`EngineGDI`). Lo hice para Paradigmas de Programación en UADE, y la idea era aplicar programación orientada a objetos en un juego de verdad, no en ejercicios sueltos.
 
 *Asteroids-style arcade game in C# (.NET Framework 4.8, WinForms/GDI+) built on a small custom 2D engine to practice OOP, design patterns and dependency injection.*
@@ -41,10 +44,19 @@ Arcade de naves y asteroides en C# con WinForms y GDI+, sobre un motor 2D propio
 
 Los asteroides chicos valen 100 puntos, los medianos 50 y los grandes 20. El récord queda guardado entre sesiones.
 
-## Cómo correrlo
+## Cómo jugarlo
+
+1. Bajá `AsteroidDestroyer-win.zip` de la [última release](https://github.com/romanvarela-rgv/asteroid-destroyer-csharp/releases/latest).
+2. Descomprimilo y abrí `EngineGDI.exe`. Necesita Windows con .NET Framework 4.8, que ya viene instalado en Windows 10 y 11.
+
+Windows puede mostrar un aviso de SmartScreen porque el `.exe` no está firmado: tocá "Más información" y después "Ejecutar de todas formas".
+
+## Cómo compilarlo
 
 1. Abrí `EngineGDI.sln` con Visual Studio (Windows, .NET Framework 4.8).
 2. Compilá y ejecutá con F5.
+
+Cada push a `main` se compila solo con GitHub Actions (`.github/workflows/build.yml`). Para publicar una versión nueva, subí un tag: `git tag v1.1.0 && git push --tags`. El workflow arma el zip y crea la release.
 
 ## Assets de UI
 
