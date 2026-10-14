@@ -70,6 +70,10 @@ Para sumar un botón, agregalo a `$buttonGroups` en el script y volvé a correrl
 
 Todo el texto del juego (botones, títulos, HUD y menús) usa una sola fuente pixel definida en `src/PixelFont.cs`: el generador la usa para los PNG y `PixelText` para dibujar el texto en pantalla, así todo tiene las mismas letras.
 
+## Licencia
+
+El código está bajo licencia [MIT](LICENSE).
+
 ---
 
 Roman Gael Varela (RGV) · [romangaelvarela.online](https://romangaelvarela.online)
